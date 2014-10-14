@@ -14,6 +14,19 @@
 		2F75C74719E8BC3F00C1BBFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F75C74619E8BC3F00C1BBFB /* Images.xcassets */; };
 		2F75C74A19E8BC3F00C1BBFB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F75C74819E8BC3F00C1BBFB /* LaunchScreen.xib */; };
 		2F75C75619E8BC4000C1BBFB /* PipTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F75C75519E8BC4000C1BBFB /* PipTests.m */; };
+		2FE4B69019EBD1D400EE8ACF /* MyAVPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FE4B68F19EBD1D400EE8ACF /* MyAVPlayerView.m */; };
+		2FE4B69319EBD62800EE8ACF /* MNF, Biggest Stage.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 2FE4B69119EBD62800EE8ACF /* MNF, Biggest Stage.m4v */; };
+		2FE4B69419EBD62800EE8ACF /* MNF, Target.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 2FE4B69219EBD62800EE8ACF /* MNF, Target.m4v */; };
+		2FEEB0EE19EC669800EB8387 /* IMG_0966.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 2FEEB0ED19EC669800EB8387 /* IMG_0966.MOV */; };
+		2FEEB0FF19EC68E700EB8387 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB0FE19EC68E700EB8387 /* AVFoundation.framework */; };
+		2FEEB10119EC68F300EB8387 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10019EC68F300EB8387 /* CoreMedia.framework */; };
+		2FEEB10319EC693E00EB8387 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10219EC693E00EB8387 /* CoreGraphics.framework */; };
+		2FEEB10519EC694700EB8387 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10419EC694700EB8387 /* Foundation.framework */; };
+		2FEEB10719EC695600EB8387 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10619EC695600EB8387 /* MobileCoreServices.framework */; };
+		2FEEB10919EC697900EB8387 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10819EC697900EB8387 /* UIKit.framework */; };
+		2FEEB10B19EC698100EB8387 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10A19EC698100EB8387 /* QuartzCore.framework */; };
+		2FEEB11219ECAE6400EB8387 /* IMG_1214.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 2FEEB11019ECAE6400EB8387 /* IMG_1214.MOV */; };
+		2FEEB11319ECAE6400EB8387 /* IMG_0974.mov in Resources */ = {isa = PBXBuildFile; fileRef = 2FEEB11119ECAE6400EB8387 /* IMG_0974.mov */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +53,20 @@
 		2F75C74F19E8BC4000C1BBFB /* PipTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PipTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F75C75419E8BC4000C1BBFB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2F75C75519E8BC4000C1BBFB /* PipTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PipTests.m; sourceTree = "<group>"; };
+		2FE4B68E19EBD1D400EE8ACF /* MyAVPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyAVPlayerView.h; sourceTree = "<group>"; };
+		2FE4B68F19EBD1D400EE8ACF /* MyAVPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyAVPlayerView.m; sourceTree = "<group>"; };
+		2FE4B69119EBD62800EE8ACF /* MNF, Biggest Stage.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MNF, Biggest Stage.m4v"; sourceTree = "<group>"; };
+		2FE4B69219EBD62800EE8ACF /* MNF, Target.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MNF, Target.m4v"; sourceTree = "<group>"; };
+		2FEEB0ED19EC669800EB8387 /* IMG_0966.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = IMG_0966.MOV; sourceTree = "<group>"; };
+		2FEEB0FE19EC68E700EB8387 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		2FEEB10019EC68F300EB8387 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		2FEEB10219EC693E00EB8387 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		2FEEB10419EC694700EB8387 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		2FEEB10619EC695600EB8387 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		2FEEB10819EC697900EB8387 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		2FEEB10A19EC698100EB8387 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		2FEEB11019ECAE6400EB8387 /* IMG_1214.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = IMG_1214.MOV; sourceTree = "<group>"; };
+		2FEEB11119ECAE6400EB8387 /* IMG_0974.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = IMG_0974.mov; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +74,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FEEB10B19EC698100EB8387 /* QuartzCore.framework in Frameworks */,
+				2FEEB10919EC697900EB8387 /* UIKit.framework in Frameworks */,
+				2FEEB10719EC695600EB8387 /* MobileCoreServices.framework in Frameworks */,
+				2FEEB10519EC694700EB8387 /* Foundation.framework in Frameworks */,
+				2FEEB10319EC693E00EB8387 /* CoreGraphics.framework in Frameworks */,
+				2FEEB10119EC68F300EB8387 /* CoreMedia.framework in Frameworks */,
+				2FEEB0FF19EC68E700EB8387 /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +100,7 @@
 				2F75C73819E8BC3F00C1BBFB /* Pip */,
 				2F75C75219E8BC4000C1BBFB /* PipTests */,
 				2F75C73719E8BC3F00C1BBFB /* Products */,
+				2FEEB11419ECAED700EB8387 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,6 +120,8 @@
 				2F75C73E19E8BC3F00C1BBFB /* AppDelegate.m */,
 				2F75C74019E8BC3F00C1BBFB /* ViewController.h */,
 				2F75C74119E8BC3F00C1BBFB /* ViewController.m */,
+				2FE4B68E19EBD1D400EE8ACF /* MyAVPlayerView.h */,
+				2FE4B68F19EBD1D400EE8ACF /* MyAVPlayerView.m */,
 				2F75C74319E8BC3F00C1BBFB /* Main.storyboard */,
 				2F75C74619E8BC3F00C1BBFB /* Images.xcassets */,
 				2F75C74819E8BC3F00C1BBFB /* LaunchScreen.xib */,
@@ -96,6 +133,11 @@
 		2F75C73919E8BC3F00C1BBFB /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				2FE4B69119EBD62800EE8ACF /* MNF, Biggest Stage.m4v */,
+				2FE4B69219EBD62800EE8ACF /* MNF, Target.m4v */,
+				2FEEB0ED19EC669800EB8387 /* IMG_0966.MOV */,
+				2FEEB11019ECAE6400EB8387 /* IMG_1214.MOV */,
+				2FEEB11119ECAE6400EB8387 /* IMG_0974.mov */,
 				2F75C73A19E8BC3F00C1BBFB /* Info.plist */,
 				2F75C73B19E8BC3F00C1BBFB /* main.m */,
 			);
@@ -117,6 +159,20 @@
 				2F75C75419E8BC4000C1BBFB /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2FEEB11419ECAED700EB8387 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2FEEB10A19EC698100EB8387 /* QuartzCore.framework */,
+				2FEEB10819EC697900EB8387 /* UIKit.framework */,
+				2FEEB10619EC695600EB8387 /* MobileCoreServices.framework */,
+				2FEEB10419EC694700EB8387 /* Foundation.framework */,
+				2FEEB10219EC693E00EB8387 /* CoreGraphics.framework */,
+				2FEEB10019EC68F300EB8387 /* CoreMedia.framework */,
+				2FEEB0FE19EC68E700EB8387 /* AVFoundation.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -200,8 +256,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F75C74519E8BC3F00C1BBFB /* Main.storyboard in Resources */,
+				2FE4B69419EBD62800EE8ACF /* MNF, Target.m4v in Resources */,
+				2FE4B69319EBD62800EE8ACF /* MNF, Biggest Stage.m4v in Resources */,
 				2F75C74A19E8BC3F00C1BBFB /* LaunchScreen.xib in Resources */,
+				2FEEB11319ECAE6400EB8387 /* IMG_0974.mov in Resources */,
 				2F75C74719E8BC3F00C1BBFB /* Images.xcassets in Resources */,
+				2FEEB11219ECAE6400EB8387 /* IMG_1214.MOV in Resources */,
+				2FEEB0EE19EC669800EB8387 /* IMG_0966.MOV in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,6 +280,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FE4B69019EBD1D400EE8ACF /* MyAVPlayerView.m in Sources */,
 				2F75C74219E8BC3F00C1BBFB /* ViewController.m in Sources */,
 				2F75C73F19E8BC3F00C1BBFB /* AppDelegate.m in Sources */,
 				2F75C73C19E8BC3F00C1BBFB /* main.m in Sources */,
@@ -346,8 +408,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Pip/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -356,8 +420,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Pip/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -414,6 +480,7 @@
 				2F75C75B19E8BC4000C1BBFB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2F75C75C19E8BC4000C1BBFB /* Build configuration list for PBXNativeTarget "PipTests" */ = {
 			isa = XCConfigurationList;
@@ -422,6 +489,7 @@
 				2F75C75E19E8BC4000C1BBFB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
