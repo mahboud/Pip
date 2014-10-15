@@ -26,6 +26,27 @@
 	return [AVPlayerLayer class];
 }
 
+- (instancetype)init
+{
+	self = [super init];
+	if (self) {
+		self.backgroundColor = [UIColor clearColor];
+	}
+	return self;
+}
+//- (instancetype)initWithCoder:(NSCoder *)coder
+//{
+//	self = [super initWithCoder:coder];
+//	if (self) {
+//		self.backgroundColor = [UIColor clearColor];
+//	}
+//	return self;
+//}
+-(void)awakeFromNib
+{
+	self.backgroundColor = [UIColor clearColor];
+
+}
 - (AVPlayer*)player
 {
 	return [(AVPlayerLayer*)[self layer] player];

@@ -21,37 +21,38 @@
                                 <rect key="frame" x="0.0" y="20" width="768" height="1004"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aaO-gZ-fK6" userLabel="pip" customClass="MyAVPlayerView">
-                                <rect key="frame" x="310" y="310" width="350" height="714"/>
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aaO-gZ-fK6" userLabel="pip" customClass="MyAVPlayerView">
+                                <rect key="frame" x="296" y="381" width="350" height="263"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="350" id="l7v-Sr-sxv"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mPF-pa-bFZ" userLabel="pip" customClass="MyAVPlayerView">
+                                <rect key="frame" x="157" y="381" width="350" height="263"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="350" id="Lqq-qL-Rpx"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="aaO-gZ-fK6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="310" placeholder="YES" id="01B-6v-1Zi"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="6L3-a5-F7x" secondAttribute="bottom" id="Amc-bi-ZHo"/>
                             <constraint firstItem="6L3-a5-F7x" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Jsi-l2-13x"/>
-                            <constraint firstItem="aaO-gZ-fK6" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="290" placeholder="YES" id="LDT-eN-A84"/>
                             <constraint firstAttribute="trailing" secondItem="6L3-a5-F7x" secondAttribute="trailing" id="NVF-1J-Ne0"/>
                             <constraint firstItem="6L3-a5-F7x" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="WaW-Ux-EdH"/>
-                            <constraint firstAttribute="trailing" secondItem="aaO-gZ-fK6" secondAttribute="trailing" id="vYY-dc-MLG"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="aaO-gZ-fK6" secondAttribute="bottom" id="xBz-hZ-uS9"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="mainView" destination="6L3-a5-F7x" id="ija-jh-ioo"/>
-                        <outlet property="pipBottomCorner" destination="xBz-hZ-uS9" id="r5n-g7-R7P"/>
-                        <outlet property="pipRightCorner" destination="vYY-dc-MLG" id="zaS-yh-aYo"/>
-                        <outlet property="pipView" destination="aaO-gZ-fK6" id="5Sb-j7-D9F"/>
-                        <outlet property="pipWidth" destination="l7v-Sr-sxv" id="sjR-sG-aRy"/>
+                        <outlet property="pipViewA" destination="aaO-gZ-fK6" id="mAi-N2-Qcu"/>
+                        <outlet property="pipViewB" destination="mPF-pa-bFZ" id="wDX-Y0-WxF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="119.04000000000001" y="530.77333333333331"/>
+            <point key="canvasLocation" x="119" y="530"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
