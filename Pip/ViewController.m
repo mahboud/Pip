@@ -9,6 +9,9 @@
 #import "ViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import "MyAVPlayerView.h"
+@interface MyLabelWithPadding : UILabel
+
+@end
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet MyAVPlayerView *mainView;
@@ -24,6 +27,10 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 @implementation ViewController {
 	UITapGestureRecognizer *singleTap;
 	UITapGestureRecognizer *doubleTap;
+	NSArray *captions;
+	NSUInteger captionIndex;
+	MyLabelWithPadding *captionLabel;
+	id timeObserver;
 }
 
 - (void)removePipGestureRecognizers:(MyAVPlayerView *)aPipView {
@@ -79,9 +86,9 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	
 //	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"MNF, Biggest Stage" ofType:@"m4v"];
 //	NSString *movie2 = [[NSBundle mainBundle] pathForResource:@"MNF, Target" ofType:@"m4v"];
-//	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"IMG_1214" ofType:@"MOV"];
+	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"IMG_1214" ofType:@"MOV"];
 	NSString *movie3 = [[NSBundle mainBundle] pathForResource:@"IMG_0974" ofType:@"MOV"];
-	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"P8240082" ofType:@"MOV"];
+//	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"P8240082" ofType:@"MOV"];
 	NSString *movie2 = [[NSBundle mainBundle] pathForResource:@"P8240082" ofType:@"MOV"];
 	self.view.backgroundColor = [UIColor blackColor];
 
@@ -119,27 +126,120 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	frame.origin.y = height - frame.size.height - 10;
 	_pipViewB.pipRect = frame;
 	_pipViewB.frame = frame;
+	
+	NSArray *timeOffsets = @[@(5.0),
+							 @(10.0),
+							 @(12.5),
+							 @(20.0),
+							 @(30.0),
+							 @(32.75),
+							 @(40.5),
+							 @(50),
+							 @(70),
+							 @(75.0),
+							 @(80.0),
+							 @(92.5),
+							 @(100.0),
+							 @(110.0),
+							 @(122.75),
+							 @(130.5),
+							 @(135.0),
+							 @(170),
+							 ];
+	captions = @[
+				 @"This is a title",
+				 @"These titles will appear once in a while",
+				 @"at different timecodes (as specified in an array)",
+				 @"and they will disappear",
+				 @"At different timecodes",
+				 @"they aren't frame perfect",
+				 @"they are based on time",
+				 @"and if a frame is dropped, they still show up",
+				 @"despite the drop",
+				 @"This is a title",
+				 @"These titles will appear once in a while",
+				 @"at different timecodes",
+				 @"and they will disappear",
+				 @"At different timecodes",
+				 @"they aren't frame perfect",
+				 @"they are based on time",
+				 @"and if a frame is dropped, they still show up",
+				 @"despite the drop",];
+	timeObserver = [_mainView.player addBoundaryTimeObserverForTimes:timeOffsets queue:dispatch_get_main_queue() usingBlock:^{
+		if (captionLabel.hidden) {
+			captionLabel.text = captions[captionIndex];
+			[captionLabel sizeToFit];
+			captionIndex++;
+			captionLabel.alpha = 0;
+			captionLabel.hidden = NO;
+			[UIView animateWithDuration:1.5 animations:^{
+				captionLabel.alpha = 1.0;
+			}];
+		}
+		else {
+			[UIView animateWithDuration:1.5 animations:^{
+				captionLabel.alpha = 0;
+			} completion:^(BOOL finished) {
+				captionLabel.hidden = YES;
+			}];
+		}
+	}];
+	captionLabel = [MyLabelWithPadding.alloc initWithFrame:CGRectMake(0, 0, 200, 30)];
+	captionLabel.translatesAutoresizingMaskIntoConstraints = NO;
+	captionLabel.textAlignment = NSTextAlignmentCenter;
+	captionLabel.textColor = [UIColor whiteColor];
+	captionLabel.clipsToBounds = YES;
+	[self.view addSubview:captionLabel];
+	captionLabel.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.75];
+	captionLabel.layer.cornerRadius = 4.0;
+	captionLabel.layer.borderColor = [UIColor whiteColor].CGColor;
+	captionLabel.layer.borderWidth = 6.0;
+	captionLabel.text = @"-------------";
+	captionLabel.numberOfLines = 0;
+	captionLabel.preferredMaxLayoutWidth = 800;
+	captionLabel.hidden = YES;
+	captionLabel.font = [UIFont fontWithName:@"Helvetica Neue" size:48];
+//	[captionLabel addConstraint:[NSLayoutConstraint constraintWithItem:captionLabel
+//															  attribute:NSLayoutAttributeWidth
+//															  relatedBy:NSLayoutRelationEqual
+//																 toItem:nil
+//															  attribute:NSLayoutAttributeNotAnAttribute
+//															 multiplier:1.0
+//															   constant:50]];
+//	[captionLabel addConstraint:[NSLayoutConstraint constraintWithItem:captionLabel
+//															  attribute:NSLayoutAttributeHeight
+//															  relatedBy:NSLayoutRelationEqual
+//																 toItem:nil
+//															  attribute:NSLayoutAttributeNotAnAttribute
+//															 multiplier:1.0
+//															   constant:50]];
+
+	
 	[self removeConstraintsAndMakeMain];
 	[self makeConstraints:_pipViewA];
 	[self makePipBorder:_pipViewA];
 	[self makeConstraints:_pipViewB];
 	[self makePipBorder:_pipViewB];
+
 }
 - (void)makePipBorder:(UIView *)aPipView
 {
 	aPipView.layer.borderColor = [UIColor blackColor].CGColor;
 	aPipView.layer.borderWidth = 2.0;
 	aPipView.layer.cornerRadius = 3.0;
+	aPipView.clipsToBounds = YES;
 }
 - (void)removePipBorder:(UIView *)aPipView
 {
 	aPipView.layer.borderWidth = 0;
 	aPipView.layer.cornerRadius = 0;
+	aPipView.clipsToBounds = NO;
 }
 - (void)removeConstraintsAndMakeMain
 {	NSLog(@"1-constraintds for %@ %@", _mainView, [_mainView constraintsAffectingLayoutForAxis:UILayoutConstraintAxisHorizontal]);
 	[_mainView removeConstraints:_mainView.constraints];
 	[self.view removeConstraints:self.view.constraints];
+	[_mainView makeStandardConstraints];
 	NSLog(@"2-constraintds for %@ %@", _mainView, [_mainView constraintsAffectingLayoutForAxis:UILayoutConstraintAxisHorizontal]);
 	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:_mainView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
 	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:_mainView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0]];
@@ -149,11 +249,27 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	width = MAX(self.view.frame.size.width, self.view.frame.size.height);;
 	[_mainView addConstraint:[NSLayoutConstraint constraintWithItem:_mainView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:width]];
 	[_mainView addConstraint:[NSLayoutConstraint constraintWithItem:_mainView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:height]];
+	
+	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:captionLabel
+														  attribute:NSLayoutAttributeBottom
+														  relatedBy:NSLayoutRelationEqual
+															 toItem:self.view
+														  attribute:NSLayoutAttributeBottom
+														 multiplier:1.0
+														   constant:-30]];
+	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:captionLabel
+														  attribute:NSLayoutAttributeCenterX
+														  relatedBy:NSLayoutRelationEqual
+															 toItem:self.view
+														  attribute:NSLayoutAttributeCenterX
+														 multiplier:1.0
+														   constant:0]];
+	
 }
 - (void)makeConstraints:(MyAVPlayerView *)aPipView
 {
 	[aPipView removeConstraints:aPipView.constraints];
-	
+	[aPipView makeStandardConstraints];
 //	NSDictionary *views = @{@"main":_mainView};
 //	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[main]-|" options:0 metrics:nil views:views]];
 //	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[main]-|" options:0 metrics:nil views:views]];
@@ -167,11 +283,21 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	aPipView.pipCenterYConstraint = [NSLayoutConstraint constraintWithItem:aPipView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:aPipView.center.y];
 	[self.view addConstraints: @[aPipView.pipCenterYConstraint, aPipView.pipCenterXConstraint]];
 	//	[self.view layoutIfNeeded];
+
+	
 	NSLog(@"3-constraintds for %@ %@", _mainView, [_mainView constraintsAffectingLayoutForAxis:UILayoutConstraintAxisHorizontal]);
+
+
 }
 - (void)handleSingleTap:(UIGestureRecognizer *)gesture
 {
 	[self toggleplay];
+	
+//	[yourPlayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.1, NSEC_PER_SEC) queue:queue usingBlock:^(CMTime time)
+//	{
+//		yourLabel.text = @"your string".
+//	}
+
 }
 
 - (void)handleDoubleTap:(UIGestureRecognizer *)gesture
@@ -180,28 +306,21 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 }
 - (void)handleSwapTap:(UIGestureRecognizer *)gesture
 {
-//	AVPlayer *player = _player1;
-//	_player1 = _player2;
-//	_player2 = player;
-//	_mainView.player = _player1;
-//	_pipView.player = _player2;
-//	return;
-//		[self.view removeConstraints:self.view.constraints];
-//		[_pipView removeConstraints:_pipView.constraints];
+
 	MyAVPlayerView *aPipView = (MyAVPlayerView *)gesture.view;
+	[aPipView removeFromSuperview];
+	[self.view insertSubview:aPipView aboveSubview:_mainView];
+	//	aPipView.clipsToBounds = NO;
 	CGRect origFrame = aPipView.frame;
-	[self removePipGestureRecognizers:aPipView];
+//	[self removePipGestureRecognizers:aPipView];
+	[self removePipBorder:aPipView];
 	[UIView animateWithDuration:0.25 animations:^{
 		CGRect frame;
 		frame.origin = self.view.frame.origin;
 		frame.size.height = MIN(self.view.frame.size.height, self.view.frame.size.width);
 		frame.size.width = MAX(self.view.frame.size.height, self.view.frame.size.width);
 		aPipView.frame = frame;
-		[self removePipBorder:aPipView];
 	} completion:^(BOOL finished) {
-//		AVPlayer *player = _player1;
-//		_player1 = _player2;
-//		_player2 = player;
 		UIView *bPipView = aPipView;
 		MyAVPlayerView *aView = self.mainView;
 		self.mainView = aPipView;
@@ -216,8 +335,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 		bPipView.frame = origFrame;
 		bPipView.alpha = 0;
 		[self.view insertSubview:_mainView atIndex:0];
-//		[self.view exchangeSubviewAtIndex:0
-//					   withSubviewAtIndex:1];
 		[self removeConstraintsAndMakeMain];
 		[self makeConstraints:(MyAVPlayerView *) _pipViewA];
 		[self makeConstraints:(MyAVPlayerView *) _pipViewB];
@@ -384,5 +501,13 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	[_pipViewA removeObserver:self forKeyPath:@"status"];
 	[_pipViewB removeObserver:self forKeyPath:@"status"];
 
+}
+@end
+
+@implementation MyLabelWithPadding
+-(CGSize)intrinsicContentSize
+{
+	CGSize contentSize = [super intrinsicContentSize];
+	return CGSizeMake(contentSize.width + 80, contentSize.height + 50);
 }
 @end

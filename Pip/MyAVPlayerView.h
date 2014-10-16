@@ -23,6 +23,6 @@
 
 - (void)setPlayer:(AVPlayer*)player;
 - (void)setVideoFillMode:(NSString *)fillMode;
-
+- (void)makeStandardConstraints;
 
 @end
