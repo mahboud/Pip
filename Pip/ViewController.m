@@ -86,66 +86,61 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 							 @(10.0),
 							 @(12.5),
 							 @(20.0),
+							 @(25.0),
 							 @(30.0),
 							 @(32.75),
 							 @(40.5),
-							 @(50),
-							 @(70),
-							 @(75.0),
-							 @(80.0),
+							 @(58),
+							 @(56),
+							 @(60),
+							 @(68),
+							 @(76),
+							 @(84.0),
 							 @(92.5),
 							 @(100.0),
+							 @(104.0),
 							 @(110.0),
+							 @(116.0),
 							 @(122.75),
 							 @(130.5),
 							 @(135.0),
-							 @(170),
+							 @(142),
+							 @(150),
+							 @(158.0),
+							 @(167.0),
+							 @(176.0),
+							 @(180),
+							 @(185.0),
+							 @(190),
 							 ];
 	captions = @[
-				 @"This is a title",
+				 @"This is a title.",
 				 @"These titles will appear once in a while",
 				 @"at different timecodes (as specified in an array)",
 				 @"and they will disappear",
-				 @"At different timecodes",
-				 @"they aren't frame perfect",
-				 @"they are based on time",
-				 @"and if a frame is dropped, they still show up",
-				 @"despite the drop",
-				 @"This is a title",
-				 @"These titles will appear once in a while",
 				 @"at different timecodes",
-				 @"and they will disappear",
-				 @"At different timecodes",
-				 @"they aren't frame perfect",
-				 @"they are based on time",
-				 @"and if a frame is dropped, they still show up",
-				 @"despite the drop",];
+				 @"the timing isn't frame perfect",
+				 @"they are based on time not frames",
+				 @"frames get dropped and compression alters frame rate",
+				 @"but despite that they still show up",
+				 @"and disappear, pretty much on schedule.",
+				 @"They can be anywhere on the screen if we want,",
+				 @"and do multiple lines with two fonts (or more)",
+				 @"We can even do a number of fancy transitions",
+];
 	timeObserver = [_mainView.player addBoundaryTimeObserverForTimes:timeOffsets queue:dispatch_get_main_queue() usingBlock:^{
 		[self handleCaptionAction];
 	}];
 	captionLabel = [MyLabelWithPadding.alloc initWithFrame:CGRectMake(0, 0, 200, 30)];
 	[self.view addSubview:captionLabel];
-//	[captionLabel addConstraint:[NSLayoutConstraint constraintWithItem:captionLabel
-//															  attribute:NSLayoutAttributeWidth
-//															  relatedBy:NSLayoutRelationEqual
-//																 toItem:nil
-//															  attribute:NSLayoutAttributeNotAnAttribute
-//															 multiplier:1.0
-//															   constant:50]];
-//	[captionLabel addConstraint:[NSLayoutConstraint constraintWithItem:captionLabel
-//															  attribute:NSLayoutAttributeHeight
-//															  relatedBy:NSLayoutRelationEqual
-//																 toItem:nil
-//															  attribute:NSLayoutAttributeNotAnAttribute
-//															 multiplier:1.0
-//															   constant:50]];
+//	captionLabel.hidden = NO;
 
 	
 	[self removeConstraintsAndMakeMain];
 	[self makeConstraints:_pipViewA];
-	[self makePipBorder:_pipViewA];
+	[_pipViewA makeBorder];
 	[self makeConstraints:_pipViewB];
-	[self makePipBorder:_pipViewB];
+	[_pipViewB makeBorder];
 	UIAlertView *alert = [UIAlertView.alloc initWithTitle:@"instructions" message:
 						  @"•Tap on background makes it play/pause\r"
 						  "•Double-tap on background makes it rewind\r"
@@ -177,19 +172,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	
 }
 
-- (void)makePipBorder:(UIView *)aPipView
-{
-	aPipView.layer.borderColor = [UIColor blackColor].CGColor;
-	aPipView.layer.borderWidth = 1.0;
-	aPipView.layer.cornerRadius = 3.0;
-	aPipView.clipsToBounds = YES;
-}
-- (void)removePipBorder:(UIView *)aPipView
-{
-	aPipView.layer.borderWidth = 0;
-	aPipView.layer.cornerRadius = 0;
-	aPipView.clipsToBounds = NO;
-}
 -(UIStatusBarStyle)preferredStatusBarStyle
 {
 	return UIStatusBarStyleLightContent;
@@ -240,7 +222,10 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 														  attribute:NSLayoutAttributeCenterX
 														 multiplier:1.0
 														   constant:0]];
-	
+//	NSDictionary *views = @{@"captionLabel":captionLabel};
+//	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|->=30-[captionLabel(<=600@500)]->=30-|" options:0 metrics:nil views:views]];
+//	[self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|->=30-[captionLabel(==50@500)]->=30-|" options:0 metrics:nil views:views]];
+
 }
 - (void)makeConstraints:(MyAVPlayerView *)aPipView
 {
@@ -306,18 +291,15 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 {
 
 	MyAVPlayerView *aPipView = (MyAVPlayerView *)gesture.view;
-//	[aPipView removeFromSuperview];
-//	[_videoContent insertSubview:aPipView aboveSubview:_mainView];
+
 	CGRect origFrame = aPipView.frame;
-#if DEBUG
+
 	if (_videoContent.subviews[1] != aPipView) {
 		[_videoContent exchangeSubviewAtIndex:1 withSubviewAtIndex:2];
 		[self.view layoutIfNeeded];
 	}
-#endif
-	//	aPipView.clipsToBounds = NO;
-//	[self removePipGestureRecognizers:aPipView];
-	[self removePipBorder:aPipView];
+
+	[aPipView removeBorder];
 	[UIView animateWithDuration:0.25 animations:^{
 		CGRect frame;
 		frame.origin = _videoContent.frame.origin;
@@ -339,22 +321,17 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 		bPipView.pipRect = origFrame;
 		bPipView.frame = origFrame;
 		bPipView.alpha = 0;
-//		[_videoContent insertSubview:_mainView atIndex:0];
+
 		[_videoContent sendSubviewToBack:_mainView];
 		[self removeConstraintsAndMakeMain];
 		[self makeConstraints:(MyAVPlayerView *) _pipViewA];
 		[self makeConstraints:(MyAVPlayerView *) _pipViewB];
-		[self makePipBorder:bPipView];
+		[bPipView makeBorder];
 		[UIView animateWithDuration:0.25 animations:^{
 			bPipView.alpha = 1.0;
 		} completion:^(BOOL finished) {
 			[self addPipGestureRecognizers:(MyAVPlayerView *) bPipView];
 			[self removePipGestureRecognizers:_mainView];
-//			for (UIGestureRecognizer *recognizer in _mainView.gestureRecognizers){
-//    NSLog (@"recognizer: %@",recognizer.description);
-//    recognizer.enabled = NO;
-//    [_mainView removeGestureRecognizer:recognizer];
-//			}
 
 		}];
 	}];
@@ -520,12 +497,12 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 			captionIndex = 0;
 		captionLabel.alpha = 0;
 		captionLabel.hidden = NO;
-		[UIView animateWithDuration:1.5 animations:^{
+		[UIView animateWithDuration:.75 animations:^{
 			captionLabel.alpha = 1.0;
 		}];
 	}
 	else {
-		[UIView animateWithDuration:1.5 animations:^{
+		[UIView animateWithDuration:1.0 animations:^{
 			captionLabel.alpha = 0;
 		} completion:^(BOOL finished) {
 			captionLabel.hidden = YES;
@@ -544,16 +521,16 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 		self.textAlignment = NSTextAlignmentCenter;
 		self.textColor = [UIColor whiteColor];
 		self.clipsToBounds = YES;
-		self.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.75];
-		self.layer.cornerRadius = 4.0;
+		self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.75];
+		self.layer.cornerRadius = 3.0;
 		self.layer.borderColor = [UIColor whiteColor].CGColor;
-		self.layer.borderWidth = 6.0;
+		self.layer.borderWidth = 3.0;
 		self.text = @"-------------";
 		self.numberOfLines = 0;
 		CGRect frame = UIScreen.mainScreen.applicationFrame;
 		self.preferredMaxLayoutWidth = 2.0 * MAX(frame.size.height, frame.size.width) / 3.0;
 		self.hidden = YES;
-		self.font = [UIFont fontWithName:@"Helvetica Neue" size:48];
+		self.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:36];
 
 	}
 	return self;

@@ -166,6 +166,21 @@
 	NSString *timecodeString = [NSString stringWithFormat:@"%lu:%02lu:%02lu.%03lu", (unsigned long)hours, (unsigned long)minutes, (unsigned long)seconds, (unsigned long)subseconds];
 	timeCodeLabel.text = timecodeString;
 }
+
+- (void)makeBorder
+{
+	self.layer.borderColor = [UIColor blackColor].CGColor;
+	self.layer.borderWidth = 1.0;
+	self.layer.cornerRadius = 3.0;
+	self.clipsToBounds = YES;
+}
+- (void)removeBorder
+{
+	self.layer.borderWidth = 0;
+	self.layer.cornerRadius = 0;
+	self.clipsToBounds = NO;
+}
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
