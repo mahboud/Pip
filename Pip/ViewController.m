@@ -14,6 +14,7 @@
 @end
 
 @interface ViewController ()
+@property (weak, nonatomic) IBOutlet UIView *videoContent;
 @property (weak, nonatomic) IBOutlet MyAVPlayerView *mainView;
 @property (weak, nonatomic) IBOutlet MyAVPlayerView *pipViewA;
 @property (weak, nonatomic) IBOutlet MyAVPlayerView *pipViewB;
@@ -33,52 +34,6 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	id timeObserver;
 }
 
-- (void)removePipGestureRecognizers:(MyAVPlayerView *)aPipView {
-	[aPipView removeGestureRecognizer:aPipView.swapTap];
-	[aPipView removeGestureRecognizer:aPipView.pan];
-	[aPipView removeGestureRecognizer:aPipView.pinch];
-}
-
-- (void)addPipGestureRecognizers:(MyAVPlayerView *)aPipView {
-	aPipView.swapTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwapTap:)];
-	aPipView.swapTap.numberOfTapsRequired = 2;
-	[singleTap requireGestureRecognizerToFail:aPipView.swapTap];
-	[aPipView addGestureRecognizer:aPipView.swapTap];
-	
-	aPipView.pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanFrom:)];
-	aPipView.pan.minimumNumberOfTouches = 1;
-	[aPipView addGestureRecognizer:aPipView.pan];
-	aPipView.pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchFrom:)];
-	[aPipView addGestureRecognizer:aPipView.pinch];
-}
--(UIStatusBarStyle)preferredStatusBarStyle
-{
-	return UIStatusBarStyleLightContent;
-}
-- (void)makeAndPreparePlayerForView:(MyAVPlayerView *)aPlayerView WithURL:(NSURL *)url {
-	AVPlayer *player = [AVPlayer playerWithURL:url];
-	[player addObserver:self
-			   forKeyPath:@"status"
-				  options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
-				  context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
-//	[_player2 addObserver:self
-//			   forKeyPath:@"status"
-//				  options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
-//				  context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
-	
-	_notificationToken = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification object:player.currentItem queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
-		
-		[[player currentItem] seekToTime:kCMTimeZero];
-		[player play];
-	}];
-//	_notificationToken = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification object:_player2.currentItem queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
-//		
-//		[[_player2 currentItem] seekToTime:kCMTimeZero];
-//		[_player2 play];
-//	}];
-	aPlayerView.player = player;
-}
-
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
@@ -91,7 +46,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 //	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"P8240082" ofType:@"MOV"];
 	NSString *movie2 = [[NSBundle mainBundle] pathForResource:@"P8240082" ofType:@"MOV"];
 	self.view.backgroundColor = [UIColor blackColor];
-
+	_videoContent.backgroundColor = [UIColor clearColor];
 	[self makeAndPreparePlayerForView:_mainView WithURL:[NSURL fileURLWithPath:movie1]];
 	[self makeAndPreparePlayerForView:_pipViewA WithURL:[NSURL fileURLWithPath:movie2]];
 	[self makeAndPreparePlayerForView:_pipViewB WithURL:[NSURL fileURLWithPath:movie3]];
@@ -101,8 +56,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	doubleTap.numberOfTapsRequired = 2;
 	[singleTap requireGestureRecognizerToFail:doubleTap];
 	
-	[self.view addGestureRecognizer:singleTap];
-	[self.view addGestureRecognizer:doubleTap];
+	[_videoContent addGestureRecognizer:singleTap];
+	[_videoContent addGestureRecognizer:doubleTap];
 	[self removePipGestureRecognizers:_pipViewA];
 	[self addPipGestureRecognizers:_pipViewA];
 	[self removePipGestureRecognizers:_pipViewB];
@@ -110,11 +65,11 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 	CGRect frame;
 	CGFloat height, width;
-	
-	height = MIN(self.view.frame.size.width, self.view.frame.size.height);
-	width = MAX(self.view.frame.size.width, self.view.frame.size.height);;
+	_videoContent.frame = self.view.frame;
+	height = MIN(_videoContent.frame.size.width, _videoContent.frame.size.height);
+	width = MAX(_videoContent.frame.size.width, _videoContent.frame.size.height);;
 
-	frame.size.width = 350;
+	frame.size.width = width / 3;
 	frame.size.height = frame.size.width * 9.0/16.0;
 	frame.origin.x = width - frame.size.width - 10;
 	frame.origin.y = height - frame.size.height - 10;
@@ -166,39 +121,10 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 				 @"and if a frame is dropped, they still show up",
 				 @"despite the drop",];
 	timeObserver = [_mainView.player addBoundaryTimeObserverForTimes:timeOffsets queue:dispatch_get_main_queue() usingBlock:^{
-		if (captionLabel.hidden) {
-			captionLabel.text = captions[captionIndex];
-			[captionLabel sizeToFit];
-			captionIndex++;
-			captionLabel.alpha = 0;
-			captionLabel.hidden = NO;
-			[UIView animateWithDuration:1.5 animations:^{
-				captionLabel.alpha = 1.0;
-			}];
-		}
-		else {
-			[UIView animateWithDuration:1.5 animations:^{
-				captionLabel.alpha = 0;
-			} completion:^(BOOL finished) {
-				captionLabel.hidden = YES;
-			}];
-		}
+		[self handleCaptionAction];
 	}];
 	captionLabel = [MyLabelWithPadding.alloc initWithFrame:CGRectMake(0, 0, 200, 30)];
-	captionLabel.translatesAutoresizingMaskIntoConstraints = NO;
-	captionLabel.textAlignment = NSTextAlignmentCenter;
-	captionLabel.textColor = [UIColor whiteColor];
-	captionLabel.clipsToBounds = YES;
 	[self.view addSubview:captionLabel];
-	captionLabel.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.75];
-	captionLabel.layer.cornerRadius = 4.0;
-	captionLabel.layer.borderColor = [UIColor whiteColor].CGColor;
-	captionLabel.layer.borderWidth = 6.0;
-	captionLabel.text = @"-------------";
-	captionLabel.numberOfLines = 0;
-	captionLabel.preferredMaxLayoutWidth = 800;
-	captionLabel.hidden = YES;
-	captionLabel.font = [UIFont fontWithName:@"Helvetica Neue" size:48];
 //	[captionLabel addConstraint:[NSLayoutConstraint constraintWithItem:captionLabel
 //															  attribute:NSLayoutAttributeWidth
 //															  relatedBy:NSLayoutRelationEqual
@@ -220,12 +146,41 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	[self makePipBorder:_pipViewA];
 	[self makeConstraints:_pipViewB];
 	[self makePipBorder:_pipViewB];
+	UIAlertView *alert = [UIAlertView.alloc initWithTitle:@"instructions" message:
+						  @"•Tap on background makes it play/pause\r"
+						  "•Double-tap on background makes it rewind\r"
+						  "•Drag PIP to reposition\r"
+						  "•Pinch PIP to resize\r"
+						  "•Double-tap on PIP to switch it to main\r"
+												 delegate:self cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
+	[alert show];
 
 }
+
+
+-(void)viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear:animated];
+	//	[_player1 play];
+	//	[_player2 play];
+	//	AVPlayerStatus status = [_player status];
+}
+- (void)didReceiveMemoryWarning {
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
+}
+-(void)dealloc
+{
+	[_mainView removeObserver:self forKeyPath:@"status"];
+	[_pipViewA removeObserver:self forKeyPath:@"status"];
+	[_pipViewB removeObserver:self forKeyPath:@"status"];
+	
+}
+
 - (void)makePipBorder:(UIView *)aPipView
 {
 	aPipView.layer.borderColor = [UIColor blackColor].CGColor;
-	aPipView.layer.borderWidth = 2.0;
+	aPipView.layer.borderWidth = 1.0;
 	aPipView.layer.cornerRadius = 3.0;
 	aPipView.clipsToBounds = YES;
 }
@@ -235,18 +190,39 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	aPipView.layer.cornerRadius = 0;
 	aPipView.clipsToBounds = NO;
 }
+-(UIStatusBarStyle)preferredStatusBarStyle
+{
+	return UIStatusBarStyleLightContent;
+}
+- (void)makeAndPreparePlayerForView:(MyAVPlayerView *)aPlayerView WithURL:(NSURL *)url {
+	AVPlayer *player = [AVPlayer playerWithURL:url];
+	[player addObserver:self
+			 forKeyPath:@"status"
+				options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
+				context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
+	
+	_notificationToken = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification object:player.currentItem queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+		[self resetCaptioning];
+		[[player currentItem] seekToTime:kCMTimeZero];
+		[player play];
+	}];
+	aPlayerView.player = player;
+}
+
+#pragma mark - AutoLayout
+
 - (void)removeConstraintsAndMakeMain
-{	NSLog(@"1-constraintds for %@ %@", _mainView, [_mainView constraintsAffectingLayoutForAxis:UILayoutConstraintAxisHorizontal]);
+{	NSLog(@"1-constraints for %@ %@", _mainView, [_mainView constraintsAffectingLayoutForAxis:UILayoutConstraintAxisHorizontal]);
 	[_mainView removeConstraints:_mainView.constraints];
-	[self.view removeConstraints:self.view.constraints];
+	[_videoContent removeConstraints:_videoContent.constraints];
 	[_mainView makeStandardConstraints];
-	NSLog(@"2-constraintds for %@ %@", _mainView, [_mainView constraintsAffectingLayoutForAxis:UILayoutConstraintAxisHorizontal]);
-	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:_mainView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
-	[self.view addConstraint:[NSLayoutConstraint constraintWithItem:_mainView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0]];
+	NSLog(@"2-constraints for %@ %@", _mainView, [_mainView constraintsAffectingLayoutForAxis:UILayoutConstraintAxisHorizontal]);
+	[_videoContent addConstraint:[NSLayoutConstraint constraintWithItem:_mainView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_videoContent attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+	[_videoContent addConstraint:[NSLayoutConstraint constraintWithItem:_mainView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_videoContent attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0]];
 	
 	CGFloat height, width;
-	height = MIN(self.view.frame.size.width, self.view.frame.size.height);
-	width = MAX(self.view.frame.size.width, self.view.frame.size.height);;
+	height = MIN(_videoContent.frame.size.width, _videoContent.frame.size.height);
+	width = MAX(_videoContent.frame.size.width, _videoContent.frame.size.height);;
 	[_mainView addConstraint:[NSLayoutConstraint constraintWithItem:_mainView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:width]];
 	[_mainView addConstraint:[NSLayoutConstraint constraintWithItem:_mainView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:height]];
 	
@@ -279,16 +255,38 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	aPipView.pipWidthConstraint = pipWidthConstraint;
 	[aPipView addConstraint:[NSLayoutConstraint constraintWithItem:aPipView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:aPipView attribute:NSLayoutAttributeWidth multiplier:9.0/16.0 constant:0.0f]];
 	
-	aPipView.pipCenterXConstraint = [NSLayoutConstraint constraintWithItem:aPipView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeft multiplier:1.0 constant:aPipView.center.x];
-	aPipView.pipCenterYConstraint = [NSLayoutConstraint constraintWithItem:aPipView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:aPipView.center.y];
-	[self.view addConstraints: @[aPipView.pipCenterYConstraint, aPipView.pipCenterXConstraint]];
-	//	[self.view layoutIfNeeded];
+	aPipView.pipCenterXConstraint = [NSLayoutConstraint constraintWithItem:aPipView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:_videoContent attribute:NSLayoutAttributeLeft multiplier:1.0 constant:aPipView.center.x];
+	aPipView.pipCenterYConstraint = [NSLayoutConstraint constraintWithItem:aPipView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_videoContent attribute:NSLayoutAttributeTop multiplier:1.0 constant:aPipView.center.y];
+	[_videoContent addConstraints: @[aPipView.pipCenterYConstraint, aPipView.pipCenterXConstraint]];
+	//	[_videoContent layoutIfNeeded];
 
 	
 	NSLog(@"3-constraintds for %@ %@", _mainView, [_mainView constraintsAffectingLayoutForAxis:UILayoutConstraintAxisHorizontal]);
 
 
 }
+
+
+#pragma mark - Gestures
+- (void)removePipGestureRecognizers:(MyAVPlayerView *)aPipView {
+	[aPipView removeGestureRecognizer:aPipView.swapTap];
+	[aPipView removeGestureRecognizer:aPipView.pan];
+	[aPipView removeGestureRecognizer:aPipView.pinch];
+}
+
+- (void)addPipGestureRecognizers:(MyAVPlayerView *)aPipView {
+	aPipView.swapTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwapTap:)];
+	aPipView.swapTap.numberOfTapsRequired = 2;
+	[singleTap requireGestureRecognizerToFail:aPipView.swapTap];
+	[aPipView addGestureRecognizer:aPipView.swapTap];
+	
+	aPipView.pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanFrom:)];
+	aPipView.pan.minimumNumberOfTouches = 1;
+	[aPipView addGestureRecognizer:aPipView.pan];
+	aPipView.pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchFrom:)];
+	[aPipView addGestureRecognizer:aPipView.pinch];
+}
+
 - (void)handleSingleTap:(UIGestureRecognizer *)gesture
 {
 	[self toggleplay];
@@ -308,20 +306,26 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 {
 
 	MyAVPlayerView *aPipView = (MyAVPlayerView *)gesture.view;
-	[aPipView removeFromSuperview];
-	[self.view insertSubview:aPipView aboveSubview:_mainView];
-	//	aPipView.clipsToBounds = NO;
+//	[aPipView removeFromSuperview];
+//	[_videoContent insertSubview:aPipView aboveSubview:_mainView];
 	CGRect origFrame = aPipView.frame;
+#if DEBUG
+	if (_videoContent.subviews[1] != aPipView) {
+		[_videoContent exchangeSubviewAtIndex:1 withSubviewAtIndex:2];
+		[self.view layoutIfNeeded];
+	}
+#endif
+	//	aPipView.clipsToBounds = NO;
 //	[self removePipGestureRecognizers:aPipView];
 	[self removePipBorder:aPipView];
 	[UIView animateWithDuration:0.25 animations:^{
 		CGRect frame;
-		frame.origin = self.view.frame.origin;
-		frame.size.height = MIN(self.view.frame.size.height, self.view.frame.size.width);
-		frame.size.width = MAX(self.view.frame.size.height, self.view.frame.size.width);
+		frame.origin = _videoContent.frame.origin;
+		frame.size.height = MIN(_videoContent.frame.size.height, _videoContent.frame.size.width);
+		frame.size.width = MAX(_videoContent.frame.size.height, _videoContent.frame.size.width);
 		aPipView.frame = frame;
 	} completion:^(BOOL finished) {
-		UIView *bPipView = aPipView;
+		MyAVPlayerView *bPipView = aPipView;
 		MyAVPlayerView *aView = self.mainView;
 		self.mainView = aPipView;
 		if (aPipView == _pipViewA) {
@@ -332,9 +336,11 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 		}
 		bPipView = aView;
+		bPipView.pipRect = origFrame;
 		bPipView.frame = origFrame;
 		bPipView.alpha = 0;
-		[self.view insertSubview:_mainView atIndex:0];
+//		[_videoContent insertSubview:_mainView atIndex:0];
+		[_videoContent sendSubviewToBack:_mainView];
 		[self removeConstraintsAndMakeMain];
 		[self makeConstraints:(MyAVPlayerView *) _pipViewA];
 		[self makeConstraints:(MyAVPlayerView *) _pipViewB];
@@ -343,24 +349,31 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 			bPipView.alpha = 1.0;
 		} completion:^(BOOL finished) {
 			[self addPipGestureRecognizers:(MyAVPlayerView *) bPipView];
+			[self removePipGestureRecognizers:_mainView];
+//			for (UIGestureRecognizer *recognizer in _mainView.gestureRecognizers){
+//    NSLog (@"recognizer: %@",recognizer.description);
+//    recognizer.enabled = NO;
+//    [_mainView removeGestureRecognizer:recognizer];
+//			}
+
 		}];
 	}];
 }
 
 - (IBAction)handlePanFrom:(UIPanGestureRecognizer *)recognizer
 {
-	CGPoint translation = [recognizer translationInView:self.view];
+	CGPoint translation = [recognizer translationInView:_videoContent];
 	
 	recognizer.view.center = CGPointMake(recognizer.view.center.x + translation.x,
 										 recognizer.view.center.y + translation.y);
-	[recognizer setTranslation:CGPointMake(0, 0) inView:self.view];
+	[recognizer setTranslation:CGPointMake(0, 0) inView:_videoContent];
 	[CATransaction begin];
 	[CATransaction setDisableActions:YES];
 //	self.pipView.center = CGPointMake(self.pipView.center.x - translation.x * 1.0,
 //												self.pipView.center.y - translation.y * 1.0);
 	CGFloat maxHeight, maxWidth;
-	maxHeight = MIN(self.view.frame.size.width, self.view.frame.size.height);
-	maxWidth = MAX(self.view.frame.size.width, self.view.frame.size.height);;
+	maxHeight = MIN(_videoContent.frame.size.width, _videoContent.frame.size.height);
+	maxWidth = MAX(_videoContent.frame.size.width, _videoContent.frame.size.height);;
 	MyAVPlayerView *aPipView = (MyAVPlayerView *)recognizer.view;
 	NSLayoutConstraint *pipCenterYConstraint = aPipView.pipCenterYConstraint;
 	pipCenterYConstraint.constant += translation.y ;
@@ -388,15 +401,15 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 		scaleStart = pipWidthConstraint.constant;
 		return;
 	}
-	if (gesture.state == UIGestureRecognizerStateChanged)
+	else if (gesture.state == UIGestureRecognizerStateChanged)
 	{
 		// Apply the scale of the gesture to get the new scale
-		CGFloat width = MAX(self.view.frame.size.height, self.view.frame.size.width);
+		CGFloat width = MAX(_videoContent.frame.size.height, _videoContent.frame.size.width);
 		pipWidthConstraint.constant = scaleStart * gesture.scale;
 		if (pipWidthConstraint.constant > 2 * width / 3)
 			pipWidthConstraint.constant = 2 * width / 3;
-		if (pipWidthConstraint.constant < 200)
-			pipWidthConstraint.constant = 200;
+		if (pipWidthConstraint.constant < width / 4)
+			pipWidthConstraint.constant = width / 4;
 		CGPoint translation = [gesture locationInView:nil];
 		
 //		gesture.view.center = CGPointMake(gesture.view.center.x + translation.x,
@@ -404,8 +417,14 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 		 NSLog(@"centert %@", NSStringFromCGPoint(translation));
 	}
-	
+	else if (gesture.state == UIGestureRecognizerStateEnded)
+	{
+		aPipView.pipRect = aPipView.frame;
+	}
 }
+
+#pragma mark - KVO
+
 - (void)observeValueForKeyPath:(NSString*) path
 					  ofObject:(id)object
 						change:(NSDictionary*)change
@@ -454,8 +473,10 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	//	NSError *err = [_player error];
 }
 
+#pragma mark - Video Transport
 - (void)rewind
 {
+	[self resetCaptioning];
 	[[_mainView.player currentItem] seekToTime:kCMTimeZero];
 	[[_pipViewA.player currentItem] seekToTime:kCMTimeZero];
 	[[_pipViewB.player currentItem] seekToTime:kCMTimeZero];
@@ -483,28 +504,61 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 {
 	return /**mRestoreAfterScrubbingRate != 0.f ||**/ [_mainView.player rate] != 0.f;
 }
+#pragma mark - Captioning
 
--(void)viewDidAppear:(BOOL)animated
+- (void)resetCaptioning
 {
-	[super viewDidAppear:animated];
-//	[_player1 play];
-//	[_player2 play];
-//	AVPlayerStatus status = [_player status];
+	captionIndex = 0;
+	captionLabel.hidden = YES;
 }
-- (void)didReceiveMemoryWarning {
-	[super didReceiveMemoryWarning];
-	// Dispose of any resources that can be recreated.
+- (void)handleCaptionAction {
+	if (captionLabel.hidden) {
+		captionLabel.text = captions[captionIndex];
+		[captionLabel sizeToFit];
+		captionIndex++;
+		if (captionIndex >= captions.count)
+			captionIndex = 0;
+		captionLabel.alpha = 0;
+		captionLabel.hidden = NO;
+		[UIView animateWithDuration:1.5 animations:^{
+			captionLabel.alpha = 1.0;
+		}];
+	}
+	else {
+		[UIView animateWithDuration:1.5 animations:^{
+			captionLabel.alpha = 0;
+		} completion:^(BOOL finished) {
+			captionLabel.hidden = YES;
+		}];
+	}
 }
--(void)dealloc
-{
-	[_mainView removeObserver:self forKeyPath:@"status"];
-	[_pipViewA removeObserver:self forKeyPath:@"status"];
-	[_pipViewB removeObserver:self forKeyPath:@"status"];
 
-}
 @end
 
 @implementation MyLabelWithPadding
+- (instancetype)initWithFrame:(CGRect)frame
+{
+	self = [super initWithFrame:(CGRect)frame];
+	if (self) {
+		self.translatesAutoresizingMaskIntoConstraints = NO;
+		self.textAlignment = NSTextAlignmentCenter;
+		self.textColor = [UIColor whiteColor];
+		self.clipsToBounds = YES;
+		self.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.75];
+		self.layer.cornerRadius = 4.0;
+		self.layer.borderColor = [UIColor whiteColor].CGColor;
+		self.layer.borderWidth = 6.0;
+		self.text = @"-------------";
+		self.numberOfLines = 0;
+		CGRect frame = UIScreen.mainScreen.applicationFrame;
+		self.preferredMaxLayoutWidth = 2.0 * MAX(frame.size.height, frame.size.width) / 3.0;
+		self.hidden = YES;
+		self.font = [UIFont fontWithName:@"Helvetica Neue" size:48];
+
+	}
+	return self;
+}
+
 -(CGSize)intrinsicContentSize
 {
 	CGSize contentSize = [super intrinsicContentSize];

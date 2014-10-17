@@ -59,7 +59,8 @@
 	[self addSubview:timeCodeLabel];
 	timeCodeLabel.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.75];
 	timeCodeLabel.layer.cornerRadius = 4.0;
-	timeCodeLabel.text = @"00:00:00;00";
+	timeCodeLabel.text = @"";
+	timeCodeLabel.hidden = YES;
 }
 
 - (void)makeStandardConstraints
@@ -121,11 +122,11 @@
 	if ([keyPath isEqualToString:@"rate"]) {
 		if ([self.player rate]) {
 			NSLog(@"playing");
-			[self startTimer];
+			//			[self startTimer];
 		}
 		else {
 			NSLog(@"stopped");
-			[self stopTimer];
+			//			[self stopTimer];
 		}
 	}
 }

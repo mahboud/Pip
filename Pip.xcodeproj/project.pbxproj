@@ -14,12 +14,8 @@
 		2F75C74719E8BC3F00C1BBFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F75C74619E8BC3F00C1BBFB /* Images.xcassets */; };
 		2F75C74A19E8BC3F00C1BBFB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F75C74819E8BC3F00C1BBFB /* LaunchScreen.xib */; };
 		2F75C75619E8BC4000C1BBFB /* PipTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F75C75519E8BC4000C1BBFB /* PipTests.m */; };
-		2F9AF30C19EE50C800FF27D0 /* IMG_1155.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 2F9AF30B19EE50C800FF27D0 /* IMG_1155.MOV */; };
 		2F9AF30E19EE52C100FF27D0 /* P8240082.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 2F9AF30D19EE52C100FF27D0 /* P8240082.MOV */; };
 		2FE4B69019EBD1D400EE8ACF /* MyAVPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FE4B68F19EBD1D400EE8ACF /* MyAVPlayerView.m */; };
-		2FE4B69319EBD62800EE8ACF /* MNF, Biggest Stage.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 2FE4B69119EBD62800EE8ACF /* MNF, Biggest Stage.m4v */; };
-		2FE4B69419EBD62800EE8ACF /* MNF, Target.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 2FE4B69219EBD62800EE8ACF /* MNF, Target.m4v */; };
-		2FEEB0EE19EC669800EB8387 /* IMG_0966.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 2FEEB0ED19EC669800EB8387 /* IMG_0966.MOV */; };
 		2FEEB0FF19EC68E700EB8387 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB0FE19EC68E700EB8387 /* AVFoundation.framework */; };
 		2FEEB10119EC68F300EB8387 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10019EC68F300EB8387 /* CoreMedia.framework */; };
 		2FEEB10319EC693E00EB8387 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10219EC693E00EB8387 /* CoreGraphics.framework */; };
@@ -230,6 +226,7 @@
 				TargetAttributes = {
 					2F75C73519E8BC3F00C1BBFB = {
 						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = FG8NNNY6FP;
 					};
 					2F75C74E19E8BC4000C1BBFB = {
 						CreatedOnToolsVersion = 6.1;
@@ -263,14 +260,10 @@
 			files = (
 				2F9AF30E19EE52C100FF27D0 /* P8240082.MOV in Resources */,
 				2F75C74519E8BC3F00C1BBFB /* Main.storyboard in Resources */,
-				2FE4B69419EBD62800EE8ACF /* MNF, Target.m4v in Resources */,
-				2FE4B69319EBD62800EE8ACF /* MNF, Biggest Stage.m4v in Resources */,
 				2F75C74A19E8BC3F00C1BBFB /* LaunchScreen.xib in Resources */,
 				2FEEB11319ECAE6400EB8387 /* IMG_0974.MOV in Resources */,
 				2F75C74719E8BC3F00C1BBFB /* Images.xcassets in Resources */,
 				2FEEB11219ECAE6400EB8387 /* IMG_1214.MOV in Resources */,
-				2FEEB0EE19EC669800EB8387 /* IMG_0966.MOV in Resources */,
-				2F9AF30C19EE50C800FF27D0 /* IMG_1155.MOV in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,7 +385,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -415,11 +408,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Pip/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -427,11 +421,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				INFOPLIST_FILE = Pip/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
