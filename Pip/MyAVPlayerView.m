@@ -34,21 +34,13 @@
 {
 	self = [super init];
 	if (self) {
-		self.backgroundColor = [UIColor clearColor];
+		[self sharedSetup];
 	}
 	return self;
 }
-//- (instancetype)initWithCoder:(NSCoder *)coder
-//{
-//	self = [super initWithCoder:coder];
-//	if (self) {
-//		self.backgroundColor = [UIColor clearColor];
-//	}
-//	return self;
-//}
--(void)awakeFromNib
+- (void)sharedSetup
 {
-//	self.translatesAutoresizingMaskIntoConstraints = NO;
+	//	self.translatesAutoresizingMaskIntoConstraints = NO;
 	self.backgroundColor = [UIColor clearColor];
 	self.clipsToBounds = YES;
 	timeCodeLabel = [UILabel.alloc initWithFrame:CGRectZero];
@@ -61,6 +53,20 @@
 	timeCodeLabel.layer.cornerRadius = 4.0;
 	timeCodeLabel.text = @"";
 	timeCodeLabel.hidden = YES;
+}
+
+//- (instancetype)initWithCoder:(NSCoder *)coder
+//{
+//	self = [super initWithCoder:coder];
+//	if (self) {
+//		self.backgroundColor = [UIColor clearColor];
+//	}
+//	return self;
+//}
+-(void)awakeFromNib
+{
+	[super awakeFromNib];
+	[self sharedSetup];
 }
 
 - (void)makeStandardConstraints

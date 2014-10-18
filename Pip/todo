@@ -1,0 +1,15 @@
+- gesture or button to individually mute each player
+- when looping the player, don't return to the beginning, but return to the start offset
+    - for pips that don't start till later this is a challenge
+    - for pips that continue until after the main then have main loop-end also end the pips
+    - for pips that should end before the end of main, there's some extra work here
+
+
+
+xml file:
+- number of videos
+- whether pips are locked and un-mainable
+- provide starting offsets for all pips with respect to main player
+    - provide end offsets for pips that should end before the end point
+    - some pips may stay paused until main reaches an offset and then start playing
+- read individual player volume settings from the xml file

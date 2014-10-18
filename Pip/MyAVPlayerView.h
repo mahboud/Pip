@@ -20,6 +20,8 @@
 @property (strong, nonatomic) NSLayoutConstraint *pipCenterXConstraint;
 @property (strong, nonatomic) NSLayoutConstraint *pipCenterYConstraint;
 @property (strong, nonatomic) NSLayoutConstraint *pipWidthConstraint;
+@property (nonatomic, getter = isMaster) BOOL master;
+@property (nonatomic, getter = isMainTimekeeper) BOOL mainTimekeeper;
 
 - (void)setPlayer:(AVPlayer*)player;
 - (void)setVideoFillMode:(NSString *)fillMode;
