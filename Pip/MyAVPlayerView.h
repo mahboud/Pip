@@ -16,13 +16,19 @@
 @property (nonatomic, strong) UITapGestureRecognizer *swapTap;
 @property (nonatomic, strong) UIPanGestureRecognizer *pan;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinch;
-@property (nonatomic) CGRect pipRect;
+//@property (nonatomic) CGRect pipRect;
+@property (nonatomic) CGFloat bigHeight;
+@property (nonatomic) CGFloat smallHeight;
+@property (nonatomic) CGFloat bigWidth;
+@property (nonatomic) CGFloat smallWidth;
+
 @property (strong, nonatomic) NSLayoutConstraint *pipCenterXConstraint;
 @property (strong, nonatomic) NSLayoutConstraint *pipCenterYConstraint;
 @property (strong, nonatomic) NSLayoutConstraint *pipWidthConstraint;
+@property (strong, nonatomic) NSLayoutConstraint *pipHeightConstraint;
 @property (nonatomic, getter = isMaster) BOOL master;
-@property (nonatomic, getter = isMainTimekeeper) BOOL mainTimekeeper;
-
+@property (nonatomic, getter = isCurrentMainView) BOOL currentMainView;
+@property (nonatomic) CGFloat aspect;
 - (void)setPlayer:(AVPlayer*)player;
 - (void)setVideoFillMode:(NSString *)fillMode;
 - (void)makeStandardConstraints;

@@ -13,3 +13,5 @@ xml file:
     - provide end offsets for pips that should end before the end point
     - some pips may stay paused until main reaches an offset and then start playing
 - read individual player volume settings from the xml file
+- determine which players are muted, or relative sound levels
+

@@ -38,9 +38,16 @@
 	}
 	return self;
 }
+- (void)dealloc
+{
+	[self removeObserver:self
+						forKeyPath:@"player.currentItem.presentationSize"];
+
+}
+
 - (void)sharedSetup
 {
-	//	self.translatesAutoresizingMaskIntoConstraints = NO;
+	self.translatesAutoresizingMaskIntoConstraints = NO;
 	self.backgroundColor = [UIColor clearColor];
 	self.clipsToBounds = YES;
 	timeCodeLabel = [UILabel.alloc initWithFrame:CGRectZero];
@@ -53,6 +60,13 @@
 	timeCodeLabel.layer.cornerRadius = 4.0;
 	timeCodeLabel.text = @"";
 	timeCodeLabel.hidden = YES;
+	_aspect = 0.1;
+	self.hidden = YES;
+	[self addObserver:self
+			 forKeyPath:@"player.currentItem.presentationSize"
+				options:NSKeyValueObservingOptionNew
+				context:NULL];
+
 }
 
 //- (instancetype)initWithCoder:(NSCoder *)coder
@@ -71,26 +85,31 @@
 
 - (void)makeStandardConstraints
 {
-//	NSDictionary *views = @{@"timecodelabel":timeCodeLabel};
-//	[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[timecodelabel]-|" options:0 metrics:nil views:views]];
-//	[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[timecodelabel]-|" options:0 metrics:nil views:views]];
-
+	//	NSDictionary *views = @{@"timecodelabel":timeCodeLabel};
+	//	[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[timecodelabel]-|" options:0 metrics:nil views:views]];
+	//	[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[timecodelabel]-|" options:0 metrics:nil views:views]];
+	
 	[timeCodeLabel removeConstraints:timeCodeLabel.constraints];
 	[self removeConstraints:timeCodeLabel.constraints];
-//	[self addConstraint:[NSLayoutConstraint constraintWithItem:timeCodeLabel
-//													 attribute:NSLayoutAttributeBottom
-//													 relatedBy:NSLayoutRelationEqual
-//														toItem:self
-//													 attribute:NSLayoutAttributeBottom
-//													multiplier:1.0
-//													  constant:-20]];
-//	[self addConstraint:[NSLayoutConstraint constraintWithItem:timeCodeLabel
-//													 attribute:NSLayoutAttributeCenterX
-//													 relatedBy:NSLayoutRelationEqual
-//														toItem:self
-//													 attribute:NSLayoutAttributeCenterX
-//													multiplier:1.0
-//													  constant:0]];
+	//	[self addConstraint:[NSLayoutConstraint constraintWithItem:timeCodeLabel
+	//													 attribute:NSLayoutAttributeBottom
+	//													 relatedBy:NSLayoutRelationEqual
+	//														toItem:self
+	//													 attribute:NSLayoutAttributeBottom
+	//													multiplier:1.0
+	//													  constant:-20]];
+	//	[self addConstraint:[NSLayoutConstraint constraintWithItem:timeCodeLabel
+	//													 attribute:NSLayoutAttributeCenterX
+	//													 relatedBy:NSLayoutRelationEqual
+	//														toItem:self
+	//													 attribute:NSLayoutAttributeCenterX
+	//													multiplier:1.0
+	//													  constant:0]];
+	//    _pipWidthConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:_currentMainView ? self.frame.size.width: self.pipRect.size.width];
+	//    [self addConstraint:_pipWidthConstraint];
+	//    _pipHeightConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1/_aspect constant:0.0f];
+	//    [self addConstraint:_pipHeightConstraint];
+	[self constraintsWithAspectRatio];
 	[timeCodeLabel addConstraint:[NSLayoutConstraint constraintWithItem:timeCodeLabel
 															  attribute:NSLayoutAttributeWidth
 															  relatedBy:NSLayoutRelationEqual
@@ -105,11 +124,39 @@
 															  attribute:NSLayoutAttributeNotAnAttribute
 															 multiplier:1.0
 															   constant:24]];
-
-//	CGRect frame = CGRectMake(30, self.frame.size.height - 20, 120, 20);
-//	timeCodeLabel.frame = frame;
-//	[self layoutIfNeeded];
-
+	
+	//	CGRect frame = CGRectMake(30, self.frame.size.height - 20, 120, 20);
+	//	timeCodeLabel.frame = frame;
+	//	[self layoutIfNeeded];
+	
+}
+- (void)constraintsWithAspectRatio
+{
+	if (_aspect >= 1) {
+		_pipWidthConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:_currentMainView ? _bigWidth : _smallWidth];
+		[self addConstraint:_pipWidthConstraint];
+		_pipHeightConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1/_aspect constant:0.0f];
+		[self addConstraint:_pipHeightConstraint];
+	}
+	else if (_aspect < 1) {
+		_pipWidthConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:_aspect constant:0.0f];
+		[self addConstraint:_pipWidthConstraint];
+		_pipHeightConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1.0 constant:_currentMainView ? _bigHeight : _smallHeight];
+		[self addConstraint:_pipHeightConstraint];
+	}
+}
+- (void)setAspect:(CGFloat)aspect
+{
+	_aspect = aspect;
+	if (aspect == 0.1)
+		self.hidden = YES;
+	else {
+		self.hidden = NO;
+		[self removeConstraints:@[_pipWidthConstraint, _pipHeightConstraint]];
+		[self constraintsWithAspectRatio];
+		[self setNeedsUpdateConstraints];
+		
+	}
 }
 - (AVPlayer*)player
 {
@@ -118,8 +165,8 @@
 
 - (void)setPlayer:(AVPlayer*)player
 {
-//	timerNoti = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayer object:player.currentItem queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
-	[player addObserver:self forKeyPath:@"rate" options:0 context:nil];
+	//	timerNoti = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayer object:player.currentItem queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+	//	[player addObserver:self forKeyPath:@"rate" options:0 context:nil];
 	
 	[(AVPlayerLayer*)[self layer] setPlayer:player];
 }
@@ -135,16 +182,33 @@
 			//			[self stopTimer];
 		}
 	}
+	else if ([keyPath isEqualToString:@"player.currentItem.presentationSize"])
+	{
+		AVPlayer  *player = (AVPlayer *)object;
+		CGSize videoFrame = self.player.currentItem.presentationSize;
+		if (videoFrame.height != 0) {
+			self.aspect = videoFrame.width / videoFrame.height;
+			
+			//        CGRect frame;
+			//        frame.size.width = pipView.frame.size.width;
+			//        frame.size.height = frame.size.width / pipView.aspect;
+			//
+			//            pipView.frame = frame;
+			[self setNeedsUpdateConstraints];
+		}
+		
+	}
+
 }
 /* Specifies how the video is displayed within a player layer’s bounds.
-	(AVLayerVideoGravityResizeAspect is default) */
+ (AVLayerVideoGravityResizeAspect is default) */
 - (void)setVideoFillMode:(NSString *)fillMode
 {
 	AVPlayerLayer *playerLayer = (AVPlayerLayer*)[self layer];
 	playerLayer.videoGravity = fillMode;
 }
 #pragma mark Timer
-
+#if 0
 - (void)stopTimer
 {
 	[_updateTimer invalidate];
@@ -172,7 +236,7 @@
 	NSString *timecodeString = [NSString stringWithFormat:@"%lu:%02lu:%02lu.%03lu", (unsigned long)hours, (unsigned long)minutes, (unsigned long)seconds, (unsigned long)subseconds];
 	timeCodeLabel.text = timecodeString;
 }
-
+#endif
 - (void)makeBorder
 {
 	self.layer.borderColor = [UIColor blackColor].CGColor;
@@ -188,11 +252,11 @@
 }
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect {
+ // Drawing code
+ }
+ */
 
 @end
