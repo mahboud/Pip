@@ -14,7 +14,6 @@
 		2F75C74719E8BC3F00C1BBFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F75C74619E8BC3F00C1BBFB /* Images.xcassets */; };
 		2F75C74A19E8BC3F00C1BBFB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F75C74819E8BC3F00C1BBFB /* LaunchScreen.xib */; };
 		2F75C75619E8BC4000C1BBFB /* PipTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F75C75519E8BC4000C1BBFB /* PipTests.m */; };
-		2F9AF30E19EE52C100FF27D0 /* P8240082.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 2F9AF30D19EE52C100FF27D0 /* P8240082.MOV */; };
 		2FE4B69019EBD1D400EE8ACF /* MyAVPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FE4B68F19EBD1D400EE8ACF /* MyAVPlayerView.m */; };
 		2FEEB0FF19EC68E700EB8387 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB0FE19EC68E700EB8387 /* AVFoundation.framework */; };
 		2FEEB10119EC68F300EB8387 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10019EC68F300EB8387 /* CoreMedia.framework */; };
@@ -23,8 +22,6 @@
 		2FEEB10719EC695600EB8387 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10619EC695600EB8387 /* MobileCoreServices.framework */; };
 		2FEEB10919EC697900EB8387 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10819EC697900EB8387 /* UIKit.framework */; };
 		2FEEB10B19EC698100EB8387 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10A19EC698100EB8387 /* QuartzCore.framework */; };
-		2FEEB11219ECAE6400EB8387 /* IMG_1214.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 2FEEB11019ECAE6400EB8387 /* IMG_1214.MOV */; };
-		2FEEB11319ECAE6400EB8387 /* IMG_0974.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 2FEEB11119ECAE6400EB8387 /* IMG_0974.MOV */; };
 		98DA414C19F2565E0068A816 /* todo in Resources */ = {isa = PBXBuildFile; fileRef = 98DA414B19F2565E0068A816 /* todo */; };
 /* End PBXBuildFile section */
 
@@ -261,12 +258,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				98DA414C19F2565E0068A816 /* todo in Resources */,
-				2F9AF30E19EE52C100FF27D0 /* P8240082.MOV in Resources */,
 				2F75C74519E8BC3F00C1BBFB /* Main.storyboard in Resources */,
 				2F75C74A19E8BC3F00C1BBFB /* LaunchScreen.xib in Resources */,
-				2FEEB11319ECAE6400EB8387 /* IMG_0974.MOV in Resources */,
 				2F75C74719E8BC3F00C1BBFB /* Images.xcassets in Resources */,
-				2FEEB11219ECAE6400EB8387 /* IMG_1214.MOV in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

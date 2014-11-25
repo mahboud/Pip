@@ -14,6 +14,7 @@
 
 @property (nonatomic, retain) AVPlayer* player;
 @property (nonatomic, strong) UITapGestureRecognizer *swapTap;
+@property (nonatomic, strong) UITapGestureRecognizer *twoFingerTap;
 @property (nonatomic, strong) UIPanGestureRecognizer *pan;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinch;
 //@property (nonatomic) CGRect pipRect;

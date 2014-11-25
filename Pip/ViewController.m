@@ -9,15 +9,28 @@
 #import "ViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import "MyAVPlayerView.h"
+#import <MobileCoreServices/MobileCoreServices.h>
+//#import <CoreMedia/CoreMedia.h>
+
+static NSString *scheme = @"http";
+static NSString *username = @"";
+static NSString *password = @"";
+static NSString *server = @"underthehood.realyze.com";
+static NSString *basePath = @"/tests/replay/";
+static NSString *video1 = @"Close Up Clean h264.mov";
+static NSString *video2 = @"Wide Clean h264.mov";
+
 @interface MyLabelWithPadding : UILabel
 
 @end
 
-@interface ViewController ()
+@interface ViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
+
 @property (weak, nonatomic) IBOutlet UIView *videoContent;
 @property (strong, nonatomic) AVPlayer *masterPlayer;
 @property (strong, nonatomic) MyAVPlayerView *currentMainView;
 @property (strong, nonatomic) NSArray *pipViews;
+@property (strong, nonatomic) UIViewController *modal;
 @property id notificationToken;
 
 @end
@@ -25,6 +38,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 
 @implementation ViewController {
 	UITapGestureRecognizer *singleTap;
+	UITapGestureRecognizer *twoFingerTap;
 	UITapGestureRecognizer *doubleTap;
 	UIPanGestureRecognizer *scrubDrag;
 	NSArray *captions;
@@ -37,37 +51,59 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-	
-	//	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"MNF, Biggest Stage" ofType:@"m4v"];
-	//	NSString *movie2 = [[NSBundle mainBundle] pathForResource:@"MNF, Target" ofType:@"m4v"];
-	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"IMG_1214" ofType:@"MOV"];
-	NSString *movie3 = [[NSBundle mainBundle] pathForResource:@"IMG_0974" ofType:@"MOV"];
-	//	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"P8240082" ofType:@"MOV"];
-	NSString *movie2 = [[NSBundle mainBundle] pathForResource:@"P8240082" ofType:@"MOV"];
-	self.view.backgroundColor = [UIColor blackColor];
 	_videoContent.backgroundColor = [UIColor clearColor];
-	_currentMainView = [self newPlayerWithURL:[NSURL fileURLWithPath:movie1]];
-	_currentMainView.master = YES;
-	_currentMainView.currentMainView = YES;
-	_masterPlayer = _currentMainView.player;
-	MyAVPlayerView *pipViewA = [self newPlayerWithURL:[NSURL fileURLWithPath:movie2]];
-	MyAVPlayerView *pipViewB = [self newPlayerWithURL:[NSURL fileURLWithPath:movie3]];
-	//    MyAVPlayerView *pipViewC = [self newPlayerWithURL:[NSURL fileURLWithPath:movie3]];
-	
-	_pipViews = @[_currentMainView, pipViewA, pipViewB];
-//	_pipViews = @[_currentMainView];
-	
+	self.view.backgroundColor = [UIColor blackColor];
 	singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
 	doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
 	doubleTap.numberOfTapsRequired = 2;
 	[singleTap requireGestureRecognizerToFail:doubleTap];
 	scrubDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleScrubDrag:)];
 	scrubDrag.minimumNumberOfTouches = 1;
-	
+	twoFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTwoFingerTap:)];
+	twoFingerTap.numberOfTouchesRequired = 2;
+
 	[_videoContent addGestureRecognizer:singleTap];
 	[_videoContent addGestureRecognizer:doubleTap];
 	[_videoContent addGestureRecognizer:scrubDrag];
+	[_videoContent addGestureRecognizer:twoFingerTap];
 	
+	captionLabel = [MyLabelWithPadding.alloc initWithFrame:CGRectMake(0, 0, 200, 30)];
+	[self.view addSubview:captionLabel];
+	//	captionLabel.hidden = NO;
+	[self createAllAVPlayersWithArrayOfMovies:nil];
+}
+- (void) createAllAVPlayersWithArrayOfMovies:(NSArray *)movieArray
+{
+//	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"IMG_1214" ofType:@"MOV"];
+//	NSString *movie3 = [[NSBundle mainBundle] pathForResource:@"IMG_0974" ofType:@"MOV"];
+//	//	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"P8240082" ofType:@"MOV"];
+//	NSString *movie2 = [[NSBundle mainBundle] pathForResource:@"P8240082" ofType:@"MOV"];
+//	_currentMainView = [self newPlayerWithURL:[NSURL fileURLWithPath:movie1]];
+//	MyAVPlayerView *pipViewA = [self newPlayerWithURL:[NSURL fileURLWithPath:movie2]];
+//	MyAVPlayerView *pipViewB = [self newPlayerWithURL:[NSURL fileURLWithPath:movie3]];
+
+	NSURLComponents *baseURL;
+
+	baseURL = [[NSURLComponents alloc] init];
+	baseURL.scheme = scheme;
+	baseURL.host = server;
+	baseURL.user = username;
+	baseURL.password = password;
+	baseURL.path = basePath;
+	_currentMainView = [self newPlayerWithURL:[[baseURL URL] URLByAppendingPathComponent:video1]];
+	NSURL *url = [[baseURL URL] URLByAppendingPathComponent:video1];
+	MyAVPlayerView *pipViewA = [self newPlayerWithURL: url];
+	url = [[baseURL URL] URLByAppendingPathComponent:video2];
+	MyAVPlayerView *pipViewB = [self newPlayerWithURL: [[baseURL URL] URLByAppendingPathComponent:video2]];
+
+	_currentMainView.master = YES;
+	_currentMainView.currentMainView = YES;
+	_masterPlayer = _currentMainView.player;
+	//    MyAVPlayerView *pipViewC = [self newPlayerWithURL:[NSURL fileURLWithPath:movie3]];
+	
+//	_pipViews = @[_currentMainView, pipViewA, pipViewB];
+	_pipViews = @[_currentMainView, pipViewB];
+
 	CGFloat height, width;
 	_videoContent.frame = self.view.frame;
 	height = MIN(_videoContent.frame.size.width, _videoContent.frame.size.height);
@@ -149,26 +185,23 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	timeObserver = [_masterPlayer addBoundaryTimeObserverForTimes:timeOffsets queue:dispatch_get_main_queue() usingBlock:^{
 		[weakSelf handleCaptionAction];
 	}];
-	captionLabel = [MyLabelWithPadding.alloc initWithFrame:CGRectMake(0, 0, 200, 30)];
-	[self.view addSubview:captionLabel];
-	//	captionLabel.hidden = NO;
-	
 	
 	[self removeConstraintsAndMakeMain];
 	for (MyAVPlayerView *pipView in _pipViews) {
 		if (!pipView.isCurrentMainView) {
 			[self makeConstraints:pipView];
 			[pipView makeBorder];
+			[self mutePlayer:pipView.player mute:YES];
 		}
 	}
 	//    [self mute:YES];
 	UIAlertView *alert = [UIAlertView.alloc initWithTitle:@"instructions" message:
 						  @"•Tap on main vid makes it play/pause\r"
 						  "•Double-tap on main vid makes it rewind\r"
-						  "•Drag PIP to reposition\r"
-						  "•Pinch PIP to resize\r"
+						  "•Drag PIP to reposition, Pinch PIP to resize\r"
 						  "•Double-tap on PIP to switch it to main\r"
 						  "New:\r"
+						  "•Two finger tap on any to toggle mute\r"
 						  "•Tap-drag on main vid to scrub\r"
 												 delegate:self cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
 	[alert show];
@@ -176,9 +209,39 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 }
 
 
+- (void)loadMovieFromCameraRoll
+{
+	
+//	if ([self.popover isPopoverVisible]) {
+//		[self.popover dismissPopoverAnimated:YES];
+//	}
+	// Initialize UIImagePickerController to select a movie from the camera roll.
+	UIImagePickerController *videoPicker = [[UIImagePickerController alloc] init];
+	videoPicker.delegate = self;
+	videoPicker.modalPresentationStyle = UIModalPresentationCurrentContext;
+	videoPicker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+	videoPicker.mediaTypes = @[(NSString*)kUTTypeMovie];
+	videoPicker.videoQuality = UIImagePickerControllerQualityTypeHigh;
+//	if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+//		self.modal = [[UIViewController alloc] init:videoPicker];
+//		self.popover.delegate = self;
+////		[self.popover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
+//		[self.popover presentPopoverFromRect:self.view.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+//	}
+//	else {
+	{
+		[self presentViewController:videoPicker animated:YES completion:nil];
+	}
+}
+
+
+
 -(void)viewDidAppear:(BOOL)animated
 {
 	[super viewDidAppear:animated];
+	//	[self loadMovieFromCameraRoll];
+	[self togglePlay];
+
 }
 - (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];
@@ -213,6 +276,36 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	}];
 	aPlayerView.player = player;
 	return aPlayerView;
+}
+#pragma mark Image Picker Controller Delegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+//	if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+//		[self.modal dismissPopoverAnimated:YES];
+//	}
+//	else {
+	{
+		[self dismissViewControllerAnimated:YES completion:nil];
+	}
+	
+	NSURL *url = info[UIImagePickerControllerReferenceURL];
+	AVPlayerItem *item = [AVPlayerItem playerItemWithURL:url];
+	
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+	[self dismissViewControllerAnimated:YES completion:nil];
+	
+	// Make sure playback is resumed from any interruption.
+}
+
+# pragma mark Popover Controller Delegate
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+	// Make sure playback is resumed from any interruption.
 }
 
 #pragma mark - AutoLayout
@@ -276,6 +369,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 #pragma mark - Gestures
 - (void)removePipGestureRecognizers:(MyAVPlayerView *)aPipView {
 	[aPipView removeGestureRecognizer:aPipView.swapTap];
+	[aPipView removeGestureRecognizer:aPipView.twoFingerTap];
 	[aPipView removeGestureRecognizer:aPipView.pan];
 	[aPipView removeGestureRecognizer:aPipView.pinch];
 }
@@ -291,6 +385,9 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	[aPipView addGestureRecognizer:aPipView.pan];
 	aPipView.pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchFrom:)];
 	[aPipView addGestureRecognizer:aPipView.pinch];
+	aPipView.twoFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTwoFingerTap:)];
+	aPipView.twoFingerTap.numberOfTouchesRequired = 2;
+	[aPipView addGestureRecognizer:aPipView.twoFingerTap];
 }
 
 - (void)handleSingleTap:(UIGestureRecognizer *)gesture
@@ -308,6 +405,17 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 {
 	[self rewind];
 }
+
+- (IBAction)handleTwoFingerTap:(UITapGestureRecognizer *)recognizer
+{
+	AVPlayer *player;
+	if (recognizer.view == _videoContent)
+		player = _masterPlayer;
+	else
+		player = ((MyAVPlayerView *)recognizer.view).player;
+	[self toggleMutePlayer:player];
+}
+
 - (void)handleSwapTap:(UIGestureRecognizer *)gesture
 {
 	
@@ -353,7 +461,11 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 		for (MyAVPlayerView *pipView in _pipViews) {
 			if (!pipView.isCurrentMainView) {
 				[self makeConstraints:pipView];
+//				[self mutePlayer:pipView.player mute:YES];
 			}
+//			else
+//				[self mutePlayer:pipView.player mute:NO];
+
 		}
 		[bPipView makeBorder];
 		[UIView animateWithDuration:0.25 animations:^{
@@ -562,6 +674,15 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 		pipView.player.rate = rate;
 	}
 }
+- (void)toggleMutePlayer:(AVPlayer *)player
+{
+	player.muted = !player.isMuted;
+}
+- (void)mutePlayer:(AVPlayer *)player mute:(BOOL)mute
+{
+	player.muted = mute;
+}
+
 - (void)toggleMute {
 	for (MyAVPlayerView *pipView in _pipViews) {
 		pipView.player.muted = !pipView.player.isMuted;
