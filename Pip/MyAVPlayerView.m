@@ -69,14 +69,7 @@
 
 }
 
-//- (instancetype)initWithCoder:(NSCoder *)coder
-//{
-//	self = [super initWithCoder:coder];
-//	if (self) {
-//		self.backgroundColor = [UIColor clearColor];
-//	}
-//	return self;
-//}
+
 -(void)awakeFromNib
 {
 	[super awakeFromNib];
@@ -133,7 +126,7 @@
 - (void)constraintsWithAspectRatio
 {
 	if (_aspect >= 1) {
-		_pipWidthConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:_currentMainView ? _bigWidth : _smallWidth];
+		_pipWidthConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:_isCurrentMainView ? _bigWidth : _smallWidth];
 		[self addConstraint:_pipWidthConstraint];
 		_pipHeightConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1/_aspect constant:0.0f];
 		[self addConstraint:_pipHeightConstraint];
@@ -141,7 +134,7 @@
 	else if (_aspect < 1) {
 		_pipWidthConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:_aspect constant:0.0f];
 		[self addConstraint:_pipWidthConstraint];
-		_pipHeightConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1.0 constant:_currentMainView ? _bigHeight : _smallHeight];
+		_pipHeightConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1.0 constant:_isCurrentMainView ? _bigHeight : _smallHeight];
 		[self addConstraint:_pipHeightConstraint];
 	}
 }
@@ -184,7 +177,7 @@
 	}
 	else if ([keyPath isEqualToString:@"player.currentItem.presentationSize"])
 	{
-		AVPlayer  *player = (AVPlayer *)object;
+//		AVPlayer  *player = (AVPlayer *)object;
 		CGSize videoFrame = self.player.currentItem.presentationSize;
 		if (videoFrame.height != 0) {
 			self.aspect = videoFrame.width / videoFrame.height;
@@ -219,6 +212,7 @@
 {
 	_updateTimer = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateTimecode)];
 	[_updateTimer addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	// possibly change to NSRunLoopCommonModes
 }
 
 - (void)updateTimecode

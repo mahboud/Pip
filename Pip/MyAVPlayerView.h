@@ -28,7 +28,7 @@
 @property (strong, nonatomic) NSLayoutConstraint *pipWidthConstraint;
 @property (strong, nonatomic) NSLayoutConstraint *pipHeightConstraint;
 @property (nonatomic, getter = isMaster) BOOL master;
-@property (nonatomic, getter = isCurrentMainView) BOOL currentMainView;
+@property (nonatomic, getter = isCurrentMainView) BOOL isCurrentMainView;
 @property (nonatomic) CGFloat aspect;
 - (void)setPlayer:(AVPlayer*)player;
 - (void)setVideoFillMode:(NSString *)fillMode;
