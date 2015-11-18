@@ -41,6 +41,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	UITapGestureRecognizer *twoFingerTap;
 	UITapGestureRecognizer *doubleTap;
 	UIPanGestureRecognizer *scrubDrag;
+	UIPanGestureRecognizer *panDrag;
 	NSArray *captions;
 	NSUInteger captionIndex;
 	MyLabelWithPadding *captionLabel;
@@ -58,15 +59,18 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	doubleTap.numberOfTapsRequired = 2;
 	[singleTap requireGestureRecognizerToFail:doubleTap];
 	scrubDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleScrubDrag:)];
-	scrubDrag.minimumNumberOfTouches = 1;
+	scrubDrag.minimumNumberOfTouches = 2;
 	twoFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTwoFingerTap:)];
 	twoFingerTap.numberOfTouchesRequired = 2;
+	panDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleMainPanDrag:)];
+	panDrag.minimumNumberOfTouches = 1;
 
 	[_videoContent addGestureRecognizer:singleTap];
 	[_videoContent addGestureRecognizer:doubleTap];
 	[_videoContent addGestureRecognizer:scrubDrag];
 	[_videoContent addGestureRecognizer:twoFingerTap];
-	
+	[_videoContent addGestureRecognizer:panDrag];
+
 	captionLabel = [MyLabelWithPadding.alloc initWithFrame:CGRectMake(0, 0, 200, 30)];
 	[self.view addSubview:captionLabel];
 	//	captionLabel.hidden = NO;
@@ -74,14 +78,24 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 }
 - (void) createAllAVPlayersWithArrayOfMovies:(NSArray *)movieArray
 {
-//	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"IMG_1214" ofType:@"MOV"];
-//	NSString *movie3 = [[NSBundle mainBundle] pathForResource:@"IMG_0974" ofType:@"MOV"];
-//	//	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"P8240082" ofType:@"MOV"];
-//	NSString *movie2 = [[NSBundle mainBundle] pathForResource:@"P8240082" ofType:@"MOV"];
-//	_currentMainView = [self newPlayerWithURL:[NSURL fileURLWithPath:movie1]];
-//	MyAVPlayerView *pipViewA = [self newPlayerWithURL:[NSURL fileURLWithPath:movie2]];
+#if 1
+	NSString *movie1  = [[NSBundle mainBundle] pathForResource:@"IMG_1214" ofType:@"MOV"];
+	NSString *movie3 = [[NSBundle mainBundle] pathForResource:@"IMG_0974" ofType:@"MOV"];
+	NSString *movie2 = [[NSBundle mainBundle] pathForResource:@"P8240082" ofType:@"MOV"];
+	NSString *movie4  = [[NSBundle mainBundle] pathForResource:@"IMG_0966" ofType:@"MOV"];
+	NSString *movie5  = [[NSBundle mainBundle] pathForResource:@"IMG_1155" ofType:@"MOV"];
+	NSString *movie6  = [[NSBundle mainBundle] pathForResource:@"IMG_1473" ofType:@"m4v"];
+	_currentMainView = [self newPlayerWithURL:[NSURL fileURLWithPath:movie1]];
+	MyAVPlayerView *pipViewA = [self newPlayerWithURL:[NSURL fileURLWithPath:movie2]];
+	MyAVPlayerView *pipViewB = [self newPlayerWithURL:[NSURL fileURLWithPath:movie3]];
+	MyAVPlayerView *pipViewC = [self newPlayerWithURL:[NSURL fileURLWithPath:movie4]];
+	MyAVPlayerView *pipViewD = [self newPlayerWithURL:[NSURL fileURLWithPath:movie5]];
+	MyAVPlayerView *pipViewE = [self newPlayerWithURL:[NSURL fileURLWithPath:movie6]];
+	MyAVPlayerView *pipViewF = [self newPlayerWithURL:[NSURL fileURLWithPath:movie5]];
+	
 //	MyAVPlayerView *pipViewB = [self newPlayerWithURL:[NSURL fileURLWithPath:movie3]];
 
+#else
 	NSURLComponents *baseURL;
 
 	baseURL = [[NSURLComponents alloc] init];
@@ -95,14 +109,13 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	MyAVPlayerView *pipViewA = [self newPlayerWithURL: url];
 	url = [[baseURL URL] URLByAppendingPathComponent:video2];
 	MyAVPlayerView *pipViewB = [self newPlayerWithURL: [[baseURL URL] URLByAppendingPathComponent:video2]];
-
+#endif
 	_currentMainView.master = YES;
 	_currentMainView.currentMainView = YES;
 	_masterPlayer = _currentMainView.player;
-	//    MyAVPlayerView *pipViewC = [self newPlayerWithURL:[NSURL fileURLWithPath:movie3]];
 	
-//	_pipViews = @[_currentMainView, pipViewA, pipViewB];
-	_pipViews = @[_currentMainView, pipViewB];
+	_pipViews = @[_currentMainView, pipViewA, pipViewB, pipViewC, pipViewD, pipViewE, pipViewF];
+//	_pipViews = @[_currentMainView, pipViewB];
 
 	CGFloat height, width;
 	_videoContent.frame = self.view.frame;
@@ -117,7 +130,12 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	NSString *frameString1 = NSStringFromCGRect(frame);
 	frame.origin.x = width - frame.size.width - 10;
 	NSString *frameString2 = NSStringFromCGRect(frame);
-	NSArray *framesArray = @[frameString1, frameString2];
+	frame.origin.x = 10;
+	frame.origin.y = 10;
+	NSString *frameString3 = NSStringFromCGRect(frame);
+	frame.origin.x = width - frame.size.width - 10;
+	NSString *frameString4 = NSStringFromCGRect(frame);
+	NSArray *framesArray = @[frameString1, frameString2, frameString3, frameString4];
 	_currentMainView.frame =_videoContent.frame;  // set to actual video aspect
 	_currentMainView.backgroundColor = [UIColor clearColor];
 	NSInteger frameIndex = 0;
@@ -125,6 +143,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 		if (!pipView.isCurrentMainView) {
 			[self removePipGestureRecognizers:pipView];
 			[self addPipGestureRecognizers:pipView];
+			if (frameIndex >= framesArray.count)
+				frameIndex = 0;
 			CGRect aFrame = CGRectFromString(framesArray[frameIndex++]);
 			pipView.frame = aFrame;
 			pipView.smallHeight = aFrame.size.height;
@@ -268,7 +288,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 			 forKeyPath:@"status"
 				options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
 				context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
-	
+#warning use weakself? 
 	_notificationToken = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification object:player.currentItem queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
 		[self resetCaptioning];
 		[[player currentItem] seekToTime:kCMTimeZero];
@@ -476,6 +496,33 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 			
 		}];
 	}];
+}
+
+- (IBAction)handleMainPanDrag:(UIPanGestureRecognizer *)recognizer
+{
+	
+	recognizer.view.center = CGPointMake(recognizer.view.center.x + translation.x,
+										 recognizer.view.center.y + translation.y);
+
+	[CATransaction begin];
+	[CATransaction setDisableActions:YES];
+	CGFloat maxHeight, maxWidth;
+	maxHeight = MIN(_videoContent.frame.size.width, _videoContent.frame.size.height);
+	maxWidth = MAX(_videoContent.frame.size.width, _videoContent.frame.size.height);;
+	MyAVPlayerView *aPipView = (MyAVPlayerView *)recognizer.view;
+	NSLayoutConstraint *pipCenterYConstraint = aPipView.pipCenterYConstraint;
+	pipCenterYConstraint.constant += translation.y ;
+	if (pipCenterYConstraint.constant < aPipView.frame.size.height / 2)
+		pipCenterYConstraint.constant = aPipView.frame.size.height / 2;
+	if (pipCenterYConstraint.constant > (maxHeight - aPipView.frame.size.height / 2))
+		pipCenterYConstraint.constant = (maxHeight - aPipView.frame.size.height / 2);
+	NSLayoutConstraint *pipCenterXConstraint = aPipView.pipCenterXConstraint;
+	pipCenterXConstraint.constant += translation.x ;
+	if (pipCenterXConstraint.constant < aPipView.frame.size.width / 2)
+		pipCenterXConstraint.constant = aPipView.frame.size.width / 2;
+	if (pipCenterXConstraint.constant > maxWidth - aPipView.frame.size.width / 2)
+		pipCenterXConstraint.constant = maxWidth - aPipView.frame.size.width / 2;
+	[CATransaction commit];
 }
 
 - (IBAction)handlePanFrom:(UIPanGestureRecognizer *)recognizer
