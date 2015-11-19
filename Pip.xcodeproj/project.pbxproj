@@ -14,6 +14,11 @@
 		2F75C74719E8BC3F00C1BBFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F75C74619E8BC3F00C1BBFB /* Images.xcassets */; };
 		2F75C74A19E8BC3F00C1BBFB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F75C74819E8BC3F00C1BBFB /* LaunchScreen.xib */; };
 		2F75C75619E8BC4000C1BBFB /* PipTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F75C75519E8BC4000C1BBFB /* PipTests.m */; };
+		2F8A333D1BFD4F4A00E59BC9 /* ItemSelectionTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F8A33381BFD4F4A00E59BC9 /* ItemSelectionTableView.m */; };
+		2F8A333E1BFD4F4A00E59BC9 /* ItemSelectionTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F8A33391BFD4F4A00E59BC9 /* ItemSelectionTableView.xib */; };
+		2F8A333F1BFD4F4A00E59BC9 /* VideoComponentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F8A333B1BFD4F4A00E59BC9 /* VideoComponentCell.m */; };
+		2F8A33401BFD4F4A00E59BC9 /* VideoComponentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2F8A333C1BFD4F4A00E59BC9 /* VideoComponentCell.xib */; };
+		2F8A33431BFD544E00E59BC9 /* LUMIN_HISTORY_TAB.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F8A33421BFD544E00E59BC9 /* LUMIN_HISTORY_TAB.png */; };
 		2FE4B69019EBD1D400EE8ACF /* MyAVPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FE4B68F19EBD1D400EE8ACF /* MyAVPlayerView.m */; };
 		2FEEB0FF19EC68E700EB8387 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB0FE19EC68E700EB8387 /* AVFoundation.framework */; };
 		2FEEB10119EC68F300EB8387 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEB10019EC68F300EB8387 /* CoreMedia.framework */; };
@@ -50,6 +55,13 @@
 		2F75C74F19E8BC4000C1BBFB /* PipTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PipTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F75C75419E8BC4000C1BBFB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2F75C75519E8BC4000C1BBFB /* PipTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PipTests.m; sourceTree = "<group>"; };
+		2F8A33371BFD4F4A00E59BC9 /* ItemSelectionTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemSelectionTableView.h; sourceTree = "<group>"; };
+		2F8A33381BFD4F4A00E59BC9 /* ItemSelectionTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemSelectionTableView.m; sourceTree = "<group>"; };
+		2F8A33391BFD4F4A00E59BC9 /* ItemSelectionTableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ItemSelectionTableView.xib; sourceTree = "<group>"; };
+		2F8A333A1BFD4F4A00E59BC9 /* VideoComponentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoComponentCell.h; sourceTree = "<group>"; };
+		2F8A333B1BFD4F4A00E59BC9 /* VideoComponentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoComponentCell.m; sourceTree = "<group>"; };
+		2F8A333C1BFD4F4A00E59BC9 /* VideoComponentCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoComponentCell.xib; sourceTree = "<group>"; };
+		2F8A33421BFD544E00E59BC9 /* LUMIN_HISTORY_TAB.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LUMIN_HISTORY_TAB.png; sourceTree = "<group>"; };
 		2FE4B68E19EBD1D400EE8ACF /* MyAVPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyAVPlayerView.h; sourceTree = "<group>"; };
 		2FE4B68F19EBD1D400EE8ACF /* MyAVPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyAVPlayerView.m; sourceTree = "<group>"; };
 		2FEEB0FE19EC68E700EB8387 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -60,6 +72,7 @@
 		2FEEB10819EC697900EB8387 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2FEEB10A19EC698100EB8387 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		98B571641BFC9C330068A511 /* VideoFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; path = VideoFiles; sourceTree = "<group>"; };
+		98C301191BFD6AC700F357B5 /* VideoFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; path = VideoFiles; sourceTree = "<group>"; };
 		98DA414B19F2565E0068A816 /* todo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = todo; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -117,9 +130,11 @@
 				98DA414B19F2565E0068A816 /* todo */,
 				2FE4B68E19EBD1D400EE8ACF /* MyAVPlayerView.h */,
 				2FE4B68F19EBD1D400EE8ACF /* MyAVPlayerView.m */,
+				2F8A33411BFD519400E59BC9 /* Sidebar */,
 				2F75C74319E8BC3F00C1BBFB /* Main.storyboard */,
 				2F75C74619E8BC3F00C1BBFB /* Images.xcassets */,
 				2F75C74819E8BC3F00C1BBFB /* LaunchScreen.xib */,
+				98C301191BFD6AC700F357B5 /* VideoFiles */,
 				2F75C73919E8BC3F00C1BBFB /* Supporting Files */,
 			);
 			path = Pip;
@@ -150,6 +165,20 @@
 				2F75C75419E8BC4000C1BBFB /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2F8A33411BFD519400E59BC9 /* Sidebar */ = {
+			isa = PBXGroup;
+			children = (
+				2F8A33371BFD4F4A00E59BC9 /* ItemSelectionTableView.h */,
+				2F8A33381BFD4F4A00E59BC9 /* ItemSelectionTableView.m */,
+				2F8A33391BFD4F4A00E59BC9 /* ItemSelectionTableView.xib */,
+				2F8A333A1BFD4F4A00E59BC9 /* VideoComponentCell.h */,
+				2F8A333B1BFD4F4A00E59BC9 /* VideoComponentCell.m */,
+				2F8A333C1BFD4F4A00E59BC9 /* VideoComponentCell.xib */,
+				2F8A33421BFD544E00E59BC9 /* LUMIN_HISTORY_TAB.png */,
+			);
+			name = Sidebar;
 			sourceTree = "<group>";
 		};
 		2FEEB11419ECAED700EB8387 /* Frameworks */ = {
@@ -210,7 +239,7 @@
 		2F75C72E19E8BC3F00C1BBFB /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = BitsOnTheGo;
 				TargetAttributes = {
 					2F75C73519E8BC3F00C1BBFB = {
@@ -250,6 +279,9 @@
 				98B571651BFC9C330068A511 /* VideoFiles in Resources */,
 				98DA414C19F2565E0068A816 /* todo in Resources */,
 				2F75C74519E8BC3F00C1BBFB /* Main.storyboard in Resources */,
+				2F8A33401BFD4F4A00E59BC9 /* VideoComponentCell.xib in Resources */,
+				2F8A33431BFD544E00E59BC9 /* LUMIN_HISTORY_TAB.png in Resources */,
+				2F8A333E1BFD4F4A00E59BC9 /* ItemSelectionTableView.xib in Resources */,
 				2F75C74A19E8BC3F00C1BBFB /* LaunchScreen.xib in Resources */,
 				2F75C74719E8BC3F00C1BBFB /* Images.xcassets in Resources */,
 			);
@@ -272,6 +304,8 @@
 				2FE4B69019EBD1D400EE8ACF /* MyAVPlayerView.m in Sources */,
 				2F75C74219E8BC3F00C1BBFB /* ViewController.m in Sources */,
 				2F75C73F19E8BC3F00C1BBFB /* AppDelegate.m in Sources */,
+				2F8A333D1BFD4F4A00E59BC9 /* ItemSelectionTableView.m in Sources */,
+				2F8A333F1BFD4F4A00E59BC9 /* VideoComponentCell.m in Sources */,
 				2F75C73C19E8BC3F00C1BBFB /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -334,6 +368,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -400,6 +435,7 @@
 				INFOPLIST_FILE = Pip/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bitsonthego.1apps.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -413,6 +449,7 @@
 				INFOPLIST_FILE = Pip/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bitsonthego.1apps.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -432,6 +469,7 @@
 				);
 				INFOPLIST_FILE = PipTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bitsonthego.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Pip.app/Pip";
 			};
@@ -447,6 +485,7 @@
 				);
 				INFOPLIST_FILE = PipTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bitsonthego.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Pip.app/Pip";
 			};

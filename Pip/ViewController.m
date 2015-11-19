@@ -10,7 +10,9 @@
 #import <AVFoundation/AVFoundation.h>
 #import "MyAVPlayerView.h"
 #import <MobileCoreServices/MobileCoreServices.h>
-//#import <CoreMedia/CoreMedia.h>
+#import "ItemSelectionTableView.h"
+#import "VideoComponentCell.h"
+
 typedef NS_ENUM(NSInteger, MZVideoFileLocation)
 {
 	kBundle,
@@ -31,12 +33,12 @@ static NSString *video2 = @"Wide Clean h264.mov";
 
 @end
 
-@interface ViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
+@interface ViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *videoContent;
 @property (strong, nonatomic) AVPlayer *masterPlayer;
 @property (strong, nonatomic) MyAVPlayerView *currentMainView;
-@property (strong, nonatomic) NSMutableArray *pipViews;
+@property (strong, nonatomic) NSMutableArray <MyAVPlayerView *> *pipViews;
 @property (strong, nonatomic) UIViewController *modal;
 @property id notificationToken;
 
@@ -55,6 +57,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	id timeObserver;
 	NSLayoutConstraint *currentCenterXConstraint;
 	NSLayoutConstraint *currentCenterYConstraint;
+	ItemSelectionTableView *itemTableView;
+	NSMutableArray *tablePipView;
 }
 
 - (void)viewDidLoad {
@@ -72,6 +76,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	twoFingerTap.numberOfTouchesRequired = 2;
 	panDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleMainPanDrag:)];
 	panDrag.minimumNumberOfTouches = 1;
+	panDrag.maximumNumberOfTouches = 1;
 
 	[_videoContent addGestureRecognizer:singleTap];
 	[_videoContent addGestureRecognizer:doubleTap];
@@ -82,21 +87,38 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	captionLabel = [MyLabelWithPadding.alloc initWithFrame:CGRectMake(0, 0, 200, 30)];
 	[self.view addSubview:captionLabel];
 	//	captionLabel.hidden = NO;
-	[self createAllAVPlayersWithArrayOfMovies:nil];
+	[self createAllAVPlayers];
+	itemTableView = [[ItemSelectionTableView alloc]init];
+	itemTableView.tableViewDataSource = self;
+	itemTableView.tableViewDelegate = self;
+	[self.view addSubview:itemTableView];
+	[itemTableView resizeToFit];
 }
-- (void) createAllAVPlayersWithArrayOfMovies:(NSArray *)movieArray
+
+- (BOOL)prefersStatusBarHidden
+{
+	return YES;
+}
+
+
+- (void) createAllAVPlayers
 {
 #if 1
 	
 	NSArray *films = [self getVideoFilesIn:kBundle];
-	_pipViews = @[].mutableCopy;
 	for (NSString *film in films) {
 		MyAVPlayerView *pipView = [self newPlayerWithURL:[NSURL fileURLWithPath:film]];
-		if (_pipViews.count == 0)
+		if (_pipViews == nil) {
 			_currentMainView = pipView;
+			_pipViews = @[].mutableCopy;
+		}
+		else {
+			[self mutePlayer:pipView.player mute:YES];
+		}
 		[_pipViews addObject:pipView];
 	}
-
+	tablePipView = [NSMutableArray arrayWithArray:_pipViews];
+	[tablePipView removeObject:_currentMainView];
 #else
 	NSURLComponents *baseURL;
 
@@ -116,7 +138,8 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	_currentMainView.master = YES;
 	_currentMainView.isCurrentMainView = YES;
 	_masterPlayer = _currentMainView.player;
-		CGFloat height, width;
+	
+	CGFloat height, width;
 	_videoContent.frame = self.view.frame;
 	height = MIN(_videoContent.frame.size.width, _videoContent.frame.size.height);
 	width = MAX(_videoContent.frame.size.width, _videoContent.frame.size.height);;
@@ -124,43 +147,30 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	CGRect frame;
 	frame.size.width = width / 5;
 	frame.size.height = frame.size.width * 9.0/16.0;
-	frame.origin.x = 10;
-	frame.origin.y = height - frame.size.height - 10;
-	NSString *frameString1 = NSStringFromCGRect(frame);
-	frame.origin.x = width - frame.size.width - 10;
-	NSString *frameString2 = NSStringFromCGRect(frame);
-	frame.origin.x = 10;
-	frame.origin.y = 10;
-	NSString *frameString3 = NSStringFromCGRect(frame);
-	frame.origin.x = width - frame.size.width - 10;
-	NSString *frameString4 = NSStringFromCGRect(frame);
-	frame.origin.y = height - frame.size.height - 10;
-	frame.origin.x = (width - frame.size.width) / 2;
-	NSString *frameString5 = NSStringFromCGRect(frame);
-	frame.origin.y = 10;
-	frame.origin.x = (width - frame.size.width) / 2;
-	NSString *frameString6 = NSStringFromCGRect(frame);
-	NSArray *framesArray = @[frameString1, frameString2, frameString3, frameString4, frameString5, frameString6];
-	_currentMainView.frame =_videoContent.frame;  // set to actual video aspect
+	frame.origin.x = 0;
+	frame.origin.y = 0;
+	_currentMainView.frame = _videoContent.frame;  // set to actual video aspect
 
 	_currentMainView.backgroundColor = [UIColor clearColor];
-	NSInteger frameIndex = 0;
+	
+	[_videoContent addSubview:_currentMainView];
+	_currentMainView.bigHeight = height;
+	_currentMainView.bigWidth = width;
+	
 	for (MyAVPlayerView *pipView in _pipViews) {
 		if (!pipView.isCurrentMainView) {
-			[self removePipGestureRecognizers:pipView];
-			[self addPipGestureRecognizers:pipView];
-			if (frameIndex >= framesArray.count)
-				frameIndex = 0;
-			CGRect aFrame = CGRectFromString(framesArray[frameIndex++]);
-			pipView.frame = aFrame;
-			pipView.smallHeight = aFrame.size.height;
-			pipView.smallWidth = aFrame.size.width;
+			pipView.frame = frame;
+			pipView.smallHeight = frame.size.height;
+			pipView.smallWidth = frame.size.width;
 		}
-		[_videoContent addSubview:pipView];
 		pipView.bigHeight = height;
 		pipView.bigWidth = width;
 	}
 
+	// these and other project specific items will be moved to plist
+	// along with all movie URLs, specifciation of which movie should be
+	// the main one to start with, whether a specific movie gets audio
+	// preference, etc.
 	NSArray *timeOffsets = @[@(5.0),
 							 @(10.0),
 							 @(12.5),
@@ -213,24 +223,17 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	}];
 	
 	[self removeConstraintsAndMakeMain];
-	for (MyAVPlayerView *pipView in _pipViews) {
-		if (!pipView.isCurrentMainView) {
-			[self makeConstraints:pipView];
-			[pipView makeBorder];
-			[self mutePlayer:pipView.player mute:YES];
-		}
-	}
 	//    [self mute:YES];
-	UIAlertView *alert = [UIAlertView.alloc initWithTitle:@"instructions" message:
-						  @"•Tap on main vid makes it play/pause\r"
-						  "•Double-tap on main vid makes it rewind\r"
-						  "•Drag PIP to reposition, Pinch PIP to resize\r"
-						  "•Double-tap on PIP to switch it to main\r"
-						  "New:\r"
-						  "•Two finger tap on any to toggle mute\r"
-						  "•Tap-drag on main vid to scrub\r"
-												 delegate:self cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
-	[alert show];
+//	UIAlertView *alert = [UIAlertView.alloc initWithTitle:@"instructions" message:
+//						  @"•Tap on main vid makes it play/pause\r"
+//						  "•Double-tap on main vid makes it rewind\r"
+//						  "•Drag PIP to reposition, Pinch PIP to resize\r"
+//						  "•Double-tap on PIP to switch it to main\r"
+//						  "New:\r"
+//						  "•Two finger tap on any to toggle mute\r"
+//						  "•Tap-drag on main vid to scrub\r"
+//												 delegate:self cancelButtonTitle:nil otherButtonTitles:@"Done", nil];
+//	[alert show];
 }
 
 
@@ -302,6 +305,21 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 	}];
 	aPlayerView.player = player;
 	return aPlayerView;
+}
+
+- (void)addToCanvas:(MyAVPlayerView *)pipView
+{
+	[_videoContent addSubview:pipView];
+	[self removePipGestureRecognizers:pipView];
+	[self addPipGestureRecognizers:pipView];
+
+//	aFrame.origin = CGPointZero;
+//	pipView.frame = aFrame;
+//	pipView.smallHeight = aFrame.size.height;
+//	pipView.smallWidth = aFrame.size.width;
+	[self makeConstraints:pipView];
+	[pipView makeBorder];
+
 }
 #pragma mark Image Picker Controller Delegate
 
@@ -473,8 +491,10 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 		[self removeConstraintsAndMakeMain];
 		for (MyAVPlayerView *pipView in _pipViews) {
 			if (!pipView.isCurrentMainView) {
-				[self makeConstraints:pipView];
-				[self mutePlayer:pipView.player mute:YES];
+				if (pipView.superview == _videoContent) {
+					[self makeConstraints:pipView];
+					[self mutePlayer:pipView.player mute:YES];
+				}
 			}
 			else
 				[self mutePlayer:pipView.player mute:NO];
@@ -567,7 +587,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 			pipWidthConstraint.constant = 2 * width / 3;
 		if (pipWidthConstraint.constant < width / 5)
 			pipWidthConstraint.constant = width / 5;
-		CGPoint translation = [gesture locationInView:nil];
+//		CGPoint translation = [gesture locationInView:nil];
 		
 		
 	}
@@ -624,6 +644,62 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 		}
 	}
 }
+
+- (IBAction)handleDragOut:(UIPanGestureRecognizer *)recognizer
+{
+	MyAVPlayerView *pipView = (MyAVPlayerView *)recognizer.view;
+	CGPoint hitPoint = [recognizer locationInView:pipView.superview];
+
+	if (recognizer.state == UIGestureRecognizerStateBegan) {
+		itemTableView.clipsToBounds = NO;
+//		[UIView animateWithDuration:0.1
+//						 animations:^{
+//							 pipView.alpha = 0.75;
+//							 pipView.transform = CGAffineTransformMakeScale(1.5, 1.5);
+//						 }
+//		 ];
+
+	}
+	else if (recognizer.state == UIGestureRecognizerStateChanged)
+	{
+		pipView.center = hitPoint;
+	}
+	else if (recognizer.state == UIGestureRecognizerStateEnded)
+	{
+//		CGPoint hitPoint = [recognizer locationInView:itemTableView];
+		CGPoint endPoint = [recognizer locationInView:_videoContent];
+		BOOL isInScrollView = CGRectContainsPoint([itemTableView bounds], hitPoint);
+		if (isInScrollView) {
+			[UIView animateWithDuration:0.2
+							 animations:^{
+								 pipView.frame = CGRectMake(0, 0, pipView.frame.size.width, pipView.frame.size.height);
+								 pipView.alpha = 1.0;
+//								 pipView.transform = CGAffineTransformIdentity;
+							 }
+							 completion:^(BOOL finished){
+							 }];
+
+		}
+		else {
+			[UIView animateWithDuration:0.2
+							 animations:^{
+								 pipView.alpha = 1.0;
+//								 pipView.transform = CGAffineTransformIdentity;
+							 }
+							 completion:^(BOOL finished){
+								 [pipView removeFromSuperview];
+								 pipView.center = endPoint;
+								 [self addToCanvas:pipView];
+
+							 }];
+			[tablePipView removeObject:pipView];
+			[itemTableView.tableView reloadData];
+		}
+		itemTableView.clipsToBounds = YES;
+
+	}
+}
+
 #pragma mark - KVO
 
 - (void)observeValueForKeyPath:(NSString*) path
@@ -806,6 +882,84 @@ NSString *GetDocumentsDirectory()
 			captionLabel.hidden = YES;
 		}];
 	}
+}
+
+
+
+#pragma mark - TableView
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+	return 1;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+	return [tablePipView count];
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return 153;
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	VideoComponentCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+
+	MyAVPlayerView *pipView = tablePipView[indexPath.row];
+	[cell.contentView addSubview:pipView];
+	pipView.hidden = NO;
+	cell.contentView.backgroundColor = UIColor.blackColor;
+	CGRect frame = cell.contentView.frame;
+	frame.size = pipView.frame.size;
+	cell.contentView.frame = frame;
+//	pipView.frame = CGRectMake(0, 0, 128, 128);
+	cell.backgroundColor = UIColor.clearColor;
+	
+	if (cell.dragOutGesture)
+		[pipView removeGestureRecognizer:cell.dragOutGesture];
+
+	cell.dragOutGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleDragOut:)];
+	cell.dragOutGesture.minimumNumberOfTouches = 2;
+	[pipView addGestureRecognizer:cell.dragOutGesture];
+	return cell;
+
+
+}
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+	return @"Films";
+}
+
+-(BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	NSLog(@"tapped");
+	return YES;
+}
+//-(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//	return nil;
+//}
+
+-(void)componentPress:(UILongPressGestureRecognizer *)press
+{
+	if (press.state == UIGestureRecognizerStateBegan)
+		NSLog(@"drag began");
+	else if (press.state == UIGestureRecognizerStateEnded)
+		NSLog(@"drag ended");
+	else if (press.state == UIGestureRecognizerStateCancelled)
+		NSLog(@"cancel drag");
+	else if (press.state == UIGestureRecognizerStateChanged)
+		NSLog(@"changed drag");
+	else if (press.state == UIGestureRecognizerStateChanged)
+		NSLog(@"other drag: %ld", (long)press.state);
+
 }
 
 @end

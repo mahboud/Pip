@@ -23,7 +23,7 @@
 {
 	CADisplayLink				*_updateTimer;
 	id							timerNoti;
-	UILabel						*timeCodeLabel;
+//	UILabel						*timeCodeLabel;
 }
 + (Class)layerClass
 {
@@ -50,16 +50,16 @@
 	self.translatesAutoresizingMaskIntoConstraints = NO;
 	self.backgroundColor = [UIColor clearColor];
 	self.clipsToBounds = YES;
-	timeCodeLabel = [UILabel.alloc initWithFrame:CGRectZero];
-	timeCodeLabel.translatesAutoresizingMaskIntoConstraints = NO;
-	timeCodeLabel.textAlignment = NSTextAlignmentCenter;
-	timeCodeLabel.textColor = [UIColor whiteColor];
-	timeCodeLabel.clipsToBounds = YES;
-	[self addSubview:timeCodeLabel];
-	timeCodeLabel.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.75];
-	timeCodeLabel.layer.cornerRadius = 4.0;
-	timeCodeLabel.text = @"";
-	timeCodeLabel.hidden = YES;
+//	timeCodeLabel = [UILabel.alloc initWithFrame:CGRectZero];
+//	timeCodeLabel.translatesAutoresizingMaskIntoConstraints = NO;
+//	timeCodeLabel.textAlignment = NSTextAlignmentCenter;
+//	timeCodeLabel.textColor = [UIColor whiteColor];
+//	timeCodeLabel.clipsToBounds = YES;
+//	[self addSubview:timeCodeLabel];
+//	timeCodeLabel.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.75];
+//	timeCodeLabel.layer.cornerRadius = 4.0;
+//	timeCodeLabel.text = @"";
+//	timeCodeLabel.hidden = YES;
 	_aspect = 0.1;
 	self.hidden = YES;
 	[self addObserver:self
@@ -82,41 +82,23 @@
 	//	[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[timecodelabel]-|" options:0 metrics:nil views:views]];
 	//	[self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[timecodelabel]-|" options:0 metrics:nil views:views]];
 	
-	[timeCodeLabel removeConstraints:timeCodeLabel.constraints];
-	[self removeConstraints:timeCodeLabel.constraints];
-	//	[self addConstraint:[NSLayoutConstraint constraintWithItem:timeCodeLabel
-	//													 attribute:NSLayoutAttributeBottom
-	//													 relatedBy:NSLayoutRelationEqual
-	//														toItem:self
-	//													 attribute:NSLayoutAttributeBottom
-	//													multiplier:1.0
-	//													  constant:-20]];
-	//	[self addConstraint:[NSLayoutConstraint constraintWithItem:timeCodeLabel
-	//													 attribute:NSLayoutAttributeCenterX
-	//													 relatedBy:NSLayoutRelationEqual
-	//														toItem:self
-	//													 attribute:NSLayoutAttributeCenterX
-	//													multiplier:1.0
-	//													  constant:0]];
-	//    _pipWidthConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:_currentMainView ? self.frame.size.width: self.pipRect.size.width];
-	//    [self addConstraint:_pipWidthConstraint];
-	//    _pipHeightConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1/_aspect constant:0.0f];
-	//    [self addConstraint:_pipHeightConstraint];
+//	[timeCodeLabel removeConstraints:timeCodeLabel.constraints];
+//	[self removeConstraints:timeCodeLabel.constraints];
 	[self constraintsWithAspectRatio];
-	[timeCodeLabel addConstraint:[NSLayoutConstraint constraintWithItem:timeCodeLabel
-															  attribute:NSLayoutAttributeWidth
-															  relatedBy:NSLayoutRelationEqual
-																 toItem:nil
-															  attribute:NSLayoutAttributeNotAnAttribute
-															 multiplier:1.0
-															   constant:110]];
-	[timeCodeLabel addConstraint:[NSLayoutConstraint constraintWithItem:timeCodeLabel
-															  attribute:NSLayoutAttributeHeight
-															  relatedBy:NSLayoutRelationEqual
-																 toItem:nil
-															  attribute:NSLayoutAttributeNotAnAttribute
-															 multiplier:1.0
-															   constant:24]];
+//	[timeCodeLabel addConstraint:[NSLayoutConstraint constraintWithItem:timeCodeLabel
+//															  attribute:NSLayoutAttributeWidth
+//															  relatedBy:NSLayoutRelationEqual
+//																 toItem:nil
+//															  attribute:NSLayoutAttributeNotAnAttribute
+//															 multiplier:1.0
+//															   constant:110]];
+//	[timeCodeLabel addConstraint:[NSLayoutConstraint constraintWithItem:timeCodeLabel
+//															  attribute:NSLayoutAttributeHeight
+//															  relatedBy:NSLayoutRelationEqual
+//																 toItem:nil
+//															  attribute:NSLayoutAttributeNotAnAttribute
+//															 multiplier:1.0
+//															   constant:24]];
 	
 	//	CGRect frame = CGRectMake(30, self.frame.size.height - 20, 120, 20);
 	//	timeCodeLabel.frame = frame;
@@ -145,7 +127,8 @@
 		self.hidden = YES;
 	else {
 		self.hidden = NO;
-		[self removeConstraints:@[_pipWidthConstraint, _pipHeightConstraint]];
+		if (_pipWidthConstraint && _pipHeightConstraint)
+			[self removeConstraints:@[_pipWidthConstraint, _pipHeightConstraint]];
 		[self constraintsWithAspectRatio];
 		[self setNeedsUpdateConstraints];
 		
