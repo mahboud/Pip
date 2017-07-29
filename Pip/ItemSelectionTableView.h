@@ -7,11 +7,11 @@
 #import <UIKit/UIKit.h>
 
 @interface ItemSelectionTableView : UIView
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (weak, nonatomic) IBOutlet UIImageView *thumb;
+@property(weak, nonatomic) IBOutlet UITableView *tableView;
+@property(weak, nonatomic) IBOutlet UIImageView *thumb;
 
-@property (nonatomic, assign) id< UITableViewDataSource > tableViewDataSource;
-@property (nonatomic, assign) id< UITableViewDelegate > tableViewDelegate;
+@property(nonatomic, assign) id<UITableViewDataSource> tableViewDataSource;
+@property(nonatomic, assign) id<UITableViewDelegate> tableViewDelegate;
 
 - (void)resizeToFit;
 - (void)flutter;

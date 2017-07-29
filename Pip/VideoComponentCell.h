@@ -7,5 +7,5 @@
 #import <UIKit/UIKit.h>
 
 @interface VideoComponentCell : UITableViewCell
-@property (nonatomic,strong) UIPanGestureRecognizer *dragOutGesture;
+@property(nonatomic, strong) UIPanGestureRecognizer *dragOutGesture;
 @end
