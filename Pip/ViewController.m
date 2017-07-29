@@ -451,7 +451,7 @@ static void *AVPlayerDemoPlaybackViewControllerStatusObservationContext = &AVPla
 - (IBAction)handleTwoFingerTap:(UITapGestureRecognizer *)recognizer
 {
 	AVPlayer *player;
-	if (recognizer.view == _videoContent)
+	if (recognizer.view == _currentMainView)
 		player = _masterPlayer;
 	else
 		player = ((MyAVPlayerView *)recognizer.view).player;
